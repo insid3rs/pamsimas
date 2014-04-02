@@ -60,6 +60,9 @@
             <field name="arch" type="xml">
                 <form string="Regionaluser Form">
                     <field name="name" />
+                    <field name="roms" />
+                    <field name="province" />
+                    <field name="city" />
                     <notebook colspan="4">
                         <page string="Description">
                             <field name="description" nolabel="1" colspan="4" />
@@ -88,43 +91,6 @@
             <field name="view_mode">tree,form</field>
         </record>
         <menuitem id="pamsimas_menu_user_regionaluser" name="Regional User" parent="pamsimas_menu_user" action="regionaluser_list_action"/>
-
-		<!-- =========================Position============================= -->
-       	<record model="ir.ui.view" id="position_form_view">
-            <field name="name">position.form</field>
-            <field name="model">pamsimas.position</field>
-            <field name="type">form</field>
-            <field name="arch" type="xml">
-                <form string="Position Form">
-                    <field name="name" />
-                    <notebook colspan="4">
-                        <page string="Description">
-                            <field name="description" nolabel="1" colspan="4" />
-                        </page>
-
-                    </notebook>
-                </form>
-            </field>
-        </record>
-
-        <record model="ir.ui.view" id="position_tree_view">
-            <field name="name">position.tree</field>
-            <field name="model">pamsimas.position</field>
-            <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <tree string="Position Tree">
-                    <field name="name" />
-                </tree>
-            </field>
-        </record>
-
-        <record model="ir.actions.act_window" id="position_list_action">
-            <field name="name">Position</field>
-            <field name="res_model">pamsimas.position</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-        <menuitem id="pamsimas_menu_user_position" name="Position" parent="pamsimas_menu_user" action="position_list_action"/>
 
 		<!-- =========================ROMS============================= -->
        	<record model="ir.ui.view" id="roms_form_view">
@@ -171,6 +137,7 @@
             <field name="arch" type="xml">
                 <form string="Province Form">
                     <field name="name" />
+                    <field name="roms" />
                     <notebook colspan="4">
                         <page string="Description">
                             <field name="description" nolabel="1" colspan="4" />
@@ -187,6 +154,7 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Province Tree">
+                    <field name="roms" />
                     <field name="name" />
                 </tree>
             </field>
@@ -200,7 +168,7 @@
         </record>
         <menuitem id="pamsimas_menu_regional_province" name="Province" parent="pamsimas_menu_regional" action="province_list_action"/>
         
-        <!-- =========================City/Kabupatan============================= -->
+        <!-- =========================City/Kabupaten============================= -->
        	<record model="ir.ui.view" id="city_form_view">
             <field name="name">city.form</field>
             <field name="model">pamsimas.city</field>
@@ -208,6 +176,8 @@
             <field name="arch" type="xml">
                 <form string="City/Kabupaten Form">
                     <field name="name" />
+                    <field name="roms" />
+                    <field name="province" />
                     <notebook colspan="4">
                         <page string="Description">
                             <field name="description" nolabel="1" colspan="4" />
@@ -224,6 +194,8 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="City/Kabupaten Tree">
+                    <field name="roms" />
+                    <field name="province" />
                     <field name="name" />
                 </tree>
             </field>
@@ -246,6 +218,7 @@
             <field name="arch" type="xml">
                 <form string="Contract Form">
                     <field name="name" />
+                    <field name="subcontract" />
                     <notebook colspan="4">
                         <page string="Description">
                             <field name="description" nolabel="1" colspan="4" />
@@ -263,6 +236,7 @@
             <field name="arch" type="xml">
                 <tree string="Contract Tree">
                     <field name="name" />
+                    <field name="subcontract" />
                 </tree>
             </field>
         </record>
@@ -283,6 +257,18 @@
             <field name="arch" type="xml">
                 <form string="Transfer Form">
                     <field name="name" />
+                    <separator colspan="4"/>
+                    <field name="no_bukti_transfer" eval="Test"  />
+                    <field name="date" />
+                    <field name="province" widget="selection"/>
+                    <field name="city" widget="selection" />
+                    <separator colspan="4"/>
+                    <field name="period" />
+                    <separator colspan="4"/>
+                    <field name="receiver_bank" />
+                    <field name="receiver_bank_no" />
+                    <field name="receiver_name" />
+                    <field name="transfer_amount" />
                     <notebook colspan="4">
                         <page string="Description">
                             <field name="description" nolabel="1" colspan="4" />
@@ -298,7 +284,14 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Transfer Tree">
-                    <field name="name" />
+                    <field name="no_bukti_transfer" />
+                    <field name="date" />
+                    <field name="roms" />
+                    <field name="receiver_bank" />
+                    <field name="receiver_bank_no" string="Account No"/>
+                    <field name="receiver_name" string="name"/>
+                    <field name="transfer_amount" />
+                    <field name="period" string="Period"/>
                 </tree>
             </field>
         </record>
@@ -318,24 +311,56 @@
             <field name="model">pamsimas.transferconfirmation</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Transfer ConfirmationForm">
+                <form string="Transfer Confirmation Form">
                     <field name="name" />
+                    <separator colspan="4"/>
+                    <field name="no_bukti_transfer" eval="Test"  />
+                    <field name="date" />
+                    <field name="province" widget="selection"/>
+                    <field name="city" widget="selection"/>
+                    <separator colspan="4"/>
+                    <field name="period" />
+                    <separator colspan="4"/>
+                    <field name="receiver_bank" />
+                    <field name="receiver_bank_no" />
+                    <field name="receiver_name" />
+                    <separator colspan="4" />
+                    <field name="transfer_received_date" />
+                    <field name="transfer_received" />
                     <notebook colspan="4">
-                        <page string="Description">
-                            <field name="description" nolabel="1" colspan="4" />
-                        </page>
+                    	<page string="Description">
+	                        <field name="transfer_contract_ids" nolabel="1">
+	                        	<form string="contract">
+	                            	<field name="name"/>
+	                                <separator colspan="4" />
+	                            	<field name="subcontract"/>
+	                            </form>
+	                            <tree string="Contract">
+	                                <field name="name" />
+	                                <field name="subcontract"/>
+	                            </tree>
+	                        </field>
+	                	</page>
                     </notebook>
                 </form>
             </field>
         </record>
-
+        
+        
         <record model="ir.ui.view" id="transferconfirmation_tree_view">
             <field name="name">transferconfirmation.tree</field>
             <field name="model">pamsimas.transferconfirmation</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Transfer Confirmation Tree">
-                    <field name="name" />
+                    <field name="no_bukti_transfer" />
+                    <field name="date" />
+                    <field name="roms" />
+                    <field name="receiver_bank" />
+                    <field name="receiver_bank_no" string="Account No"/>
+                    <field name="receiver_name" string="name"/>
+                    <field name="transfer_received" />
+                    <field name="period" string="Period"/>
                 </tree>
             </field>
         </record>
