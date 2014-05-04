@@ -2,7 +2,6 @@
 <openerp>
     <data>
 
-
         <menuitem id="pamsimas_menu" name="Master Data" />
         <menuitem id="pamsimas_menu_regional" name="Regional" parent="pamsimas_menu" />
         <menuitem id="pamsimas_menu_contract" name="Contract" parent="pamsimas_menu" />
@@ -15,42 +14,43 @@
 		<menuitem id="pamsimas_menu_report_menu" name="Report" parent="pamsimas_menu_report" />
 		
         <!-- =========================firm============================= -->
-        <record model="ir.ui.view" id="firm_form_view">
-            <field name="name">firm.form</field>
-            <field name="model">pamsimas.firm</field>
+        
+        <record model="ir.ui.view" id="firm_form_partner_view" >
+            <field name="name">res.partner.form</field>
+            <field name="model">res.partner</field>
             <field name="type">form</field>
+            <field name="inherit_id" ref="base.view_partner_form" />
             <field name="arch" type="xml">
-                <form string="firm Form">
-                    <field name="name" />
-                    <notebook colspan="4">
-                        <page string="Description">
-                            <field name="description" nolabel="1" colspan="4" />
-                        </page>
-                    </notebook>
-                </form>
+                <xpath expr="/form/sheet/group/group/field[@name='website']"
+					position="after">
+					<field name="keterangan"/>	
+				</xpath>
+				<xpath expr="/form/sheet/notebook/page[@string='Contacts']"
+					position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
             </field>
-        </record>
-
-        <record model="ir.ui.view" id="firm_tree_view">
-            <field name="name">firm.tree</field>
-            <field name="model">pamsimas.firm</field>
+        </record>   
+        
+        <record model="ir.ui.view" id="firm_tree_partner_view">
+            <field name="name">res.partner.tree</field>
+            <field name="model">res.partner</field>
             <field name="type">tree</field>
+            <field name="inherit_id" ref="base.view_partner_tree" /> 
             <field name="arch" type="xml">
-                <tree string="firm Tree">
-                    <field name="name" />
-                </tree>
+            	 <field name="name" position="after"> 
+            	 </field>
             </field>
         </record>
-
+        
         <record model="ir.actions.act_window" id="firm_list_action">
             <field name="name">Firm</field>
-            <field name="res_model">pamsimas.firm</field>
+            <field name="res_model">res.partner</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
 
         <menuitem id="pamsimas_menu_user_firm" name="Firm" parent="pamsimas_menu_user" action="firm_list_action" />
-
 
         <!-- =========================Regional User============================= -->
        	<record model="ir.ui.view" id="regionaluser_form_view">
@@ -58,20 +58,26 @@
             <field name="model">pamsimas.regionaluser</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Regionaluser Form">
-                    <field name="name" />
-                    <field name="roms" />
-                    <field name="province" />
-                    <field name="city" />
-                    <notebook colspan="4">
-                        <page string="Description">
-                            <field name="description" nolabel="1" colspan="4" />
-                        </page>
-
-                    </notebook>
+                <form string="Regionaluser Form" version="7.0">
+                	<sheet>
+                		<group>
+                			<group string="Regional User">
+			                    <field name="name" />
+			                    <field name="position" on_change="onchange_get_office(position)"/>
+			                    <field name="office" options="{'create': false, 'create_edit': false}" />
+		                    </group>
+		                    <group/>
+	                    </group>
+	                    <notebook colspan="4">
+	                        <page string="Description">
+	                            <field name="description" nolabel="1" colspan="4" />
+	                        </page>				
+	                    </notebook>
+	           		</sheet>
                 </form>
             </field>
         </record>
+        
 
         <record model="ir.ui.view" id="regionaluser_tree_view">
             <field name="name">regionaluser.tree</field>
@@ -79,6 +85,7 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Regionaluser Tree">
+                	<field name="office" />
                     <field name="name" />
                 </tree>
             </field>
@@ -95,147 +102,233 @@
 		<!-- =========================ROMS============================= -->
        	<record model="ir.ui.view" id="roms_form_view">
             <field name="name">roms.form</field>
-            <field name="model">pamsimas.roms</field>
+            <field name="model">pamsimas.regional</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="ROMS Form">
-                    <field name="name" />
-                    <notebook colspan="4">
-                        <page string="Description">
-                            <field name="description" nolabel="1" colspan="4" />
-                        </page>
-
-                    </notebook>
+                <form string="ROMS Form" version="7.0">
+                    <sheet>
+                    	<group>
+                    		<group string="Roms">
+                    			<field name="name" on_change="update_detail(name,roms,'roms')"/>
+                    			<field name="detail" invisible="1" />
+                    			<field name="roms" on_change="update_detail(name,roms,'roms')" required="True" />
+                    		</group>
+                    		<group/>
+                    	</group>
+               			<notebook colspan="4">
+                   			<page string="Description">
+                       			<field name="description" nolabel="1" colspan="4" />
+                   			</page>
+               			</notebook>
+                    </sheet>
                 </form>
             </field>
         </record>
 
         <record model="ir.ui.view" id="roms_tree_view">
             <field name="name">roms.tree</field>
-            <field name="model">pamsimas.roms</field>
+            <field name="model">pamsimas.regional</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="ROMS Tree">
-                    <field name="name" />
+                	<field name="name" />
+                    <field name="roms" />
+                    <field name="description"/>
                 </tree>
             </field>
         </record>
 
         <record model="ir.actions.act_window" id="roms_list_action">
             <field name="name">ROMS</field>
-            <field name="res_model">pamsimas.roms</field>
+            <field name="res_model">pamsimas.regional</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-        </record>
+            <field name="domain">[('roms','!=',False),('province','=',False),('city','=',False)]</field>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="roms_list_action_tree_view">
+		    <field eval="1" name="sequence"/>
+		    <field name="view_mode">tree</field>
+		    <field name="view_id" ref="roms_tree_view"/>
+		    <field name="act_window_id" ref="roms_list_action"/>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="roms_list_action_form_view">
+		    <field eval="2" name="sequence"/>
+		    <field name="view_mode">form</field>
+		    <field name="view_id" ref="roms_form_view"/>
+		    <field name="act_window_id" ref="roms_list_action"/>
+		</record>
+
         <menuitem id="pamsimas_menu_regional_roms" name="ROMS" parent="pamsimas_menu_regional" action="roms_list_action"/>
         
         <!-- =========================Province============================= -->
        	<record model="ir.ui.view" id="province_form_view">
             <field name="name">province.form</field>
-            <field name="model">pamsimas.province</field>
+            <field name="model">pamsimas.regional</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Province Form">
-                    <field name="name" />
-                    <field name="roms" />
-                    <notebook colspan="4">
-                        <page string="Description">
-                            <field name="description" nolabel="1" colspan="4" />
-                        </page>
-
-                    </notebook>
+                <form string="Province Form" version="7.0">
+                	<sheet>
+		             	<group>
+		             		<group string="Province">
+			             		<field name="name" on_change="update_detail(name,province,'province')"/>
+			             		<field name="detail" invisible="1" />
+			                    <field name="roms" />
+			                    <field name="province" on_change="update_detail(name,province,'province')"/>
+		                    </group>
+		                    <group/>
+		             	</group>
+	                    <notebook colspan="4">
+	                        <page string="Description">
+	                            <field name="description" nolabel="1" colspan="4" />
+	                        </page>
+	                    </notebook>
+		          	</sheet>
                 </form>
             </field>
         </record>
 
         <record model="ir.ui.view" id="province_tree_view">
             <field name="name">province.tree</field>
-            <field name="model">pamsimas.province</field>
+            <field name="model">pamsimas.regional</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Province Tree">
-                    <field name="roms" />
                     <field name="name" />
+                    <field name="province" />
+                    <field name="roms" />
+                    <field name="description" />
                 </tree>
             </field>
         </record>
-
+        
         <record model="ir.actions.act_window" id="province_list_action">
             <field name="name">Province</field>
-            <field name="res_model">pamsimas.province</field>
+            <field name="res_model">pamsimas.regional</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="domain">[('roms','!=',False),('province','!=',False),('city','=',False)]</field>
         </record>
+        
+        <record model="ir.actions.act_window.view" id="province_list_action_tree_view">
+		    <field eval="1" name="sequence"/>
+		    <field name="view_mode">tree</field>
+		    <field name="view_id" ref="province_tree_view"/>
+		    <field name="act_window_id" ref="province_list_action"/>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="province_list_action_form_view">
+		    <field eval="2" name="sequence"/>
+		    <field name="view_mode">form</field>
+		    <field name="view_id" ref="province_form_view"/>
+		    <field name="act_window_id" ref="province_list_action"/>
+		</record>
+        
         <menuitem id="pamsimas_menu_regional_province" name="Province" parent="pamsimas_menu_regional" action="province_list_action"/>
         
         <!-- =========================City/Kabupaten============================= -->
        	<record model="ir.ui.view" id="city_form_view">
             <field name="name">city.form</field>
-            <field name="model">pamsimas.city</field>
+            <field name="model">pamsimas.regional</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="City/Kabupaten Form">
-                    <field name="name" />
-                    <field name="roms" />
-                    <field name="province" />
-                    <notebook colspan="4">
-                        <page string="Description">
-                            <field name="description" nolabel="1" colspan="4" />
-                        </page>
-
-                    </notebook>
+                <form string="City/Kabupaten Form" version="7.0">
+                    <sheet>
+                    	<group>
+                    		<group string="City/Kabupatan">
+	                    		<field name="name" on_change="update_detail(name,city,'city')"/>
+			             		<field name="detail" invisible="1" />
+			                    <field name="roms" />
+			                    <field name="province" />
+			                    <field name="city" on_change="update_detail(name,city,'city')"/>
+                    		</group>
+                    		<group/>
+                    	</group>
+	                    <notebook colspan="4">
+	                        <page string="Description">
+	                            <field name="description" nolabel="1" colspan="4" />
+	                        </page>
+	                    </notebook>
+                    </sheet>
+                    
                 </form>
             </field>
         </record>
 
         <record model="ir.ui.view" id="city_tree_view">
             <field name="name">city.tree</field>
-            <field name="model">pamsimas.city</field>
+            <field name="model">pamsimas.regional</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="City/Kabupaten Tree">
+                    <field name="name" />
+                    <field name="city" />
                     <field name="roms" />
                     <field name="province" />
-                    <field name="name" />
+                    <field name="description" />
                 </tree>
             </field>
         </record>
 
         <record model="ir.actions.act_window" id="city_list_action">
             <field name="name">City/Kabupaten</field>
-            <field name="res_model">pamsimas.city</field>
+            <field name="res_model">pamsimas.regional</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="domain">[('roms','!=',False),('province','!=',False),('city','!=',False)]</field>
         </record>
+        
+        <record model="ir.actions.act_window.view" id="city_list_action_tree_view">
+		    <field eval="1" name="sequence"/>
+		    <field name="view_mode">tree</field>
+		    <field name="view_id" ref="city_tree_view"/>
+		    <field name="act_window_id" ref="city_list_action"/>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="city_list_action_form_view">
+		    <field eval="2" name="sequence"/>
+		    <field name="view_mode">form</field>
+		    <field name="view_id" ref="city_form_view"/>
+		    <field name="act_window_id" ref="city_list_action"/>
+		</record>
+		
         <menuitem id="pamsimas_menu_regional_city" name="City/Kabupaten" parent="pamsimas_menu_regional" action="city_list_action"/>
         
         
         <!-- =========================Contract============================= -->
        	<record model="ir.ui.view" id="contract_form_view">
-            <field name="name">contract.form</field>
-            <field name="model">pamsimas.contract</field>
+            <field name="name">contractitem.form</field>
+            <field name="model">pamsimas.contractitem</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Contract Form">
-                    <field name="name" />
-                    <field name="subcontract" />
-                    <notebook colspan="4">
-                        <page string="Description">
-                            <field name="description" nolabel="1" colspan="4" />
-                        </page>
-
-                    </notebook>
+                <form string="Contract Form" version="7.0">
+                	<sheet>
+                		<group>
+                			<group string="Contract">
+                				<field name="name" invisible="1"/>
+	                			<field name="contract" on_change="update_detail(contract,subcontract)"/>
+		                    	<field name="subcontract" on_change="update_detail(contract,subcontract)"/>
+	                    	</group>
+	                    	<group/>
+                		</group>
+	                    <notebook colspan="4">
+	                        <page string="Description">
+	                            <field name="description" nolabel="1" colspan="4" />
+	                        </page>
+	                    </notebook>
+                	</sheet>
                 </form>
             </field>
         </record>
 
         <record model="ir.ui.view" id="contract_tree_view">
-            <field name="name">contract.tree</field>
-            <field name="model">pamsimas.contract</field>
+            <field name="name">contractitem.tree</field>
+            <field name="model">pamsimas.contractitem</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Contract Tree">
-                    <field name="name" />
+                    <field name="contract" />
                     <field name="subcontract" />
                 </tree>
             </field>
@@ -243,7 +336,7 @@
 
         <record model="ir.actions.act_window" id="contract_list_action">
             <field name="name">Contract Item</field>
-            <field name="res_model">pamsimas.contract</field>
+            <field name="res_model">pamsimas.contractitem</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
@@ -255,25 +348,61 @@
             <field name="model">pamsimas.transfer</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Transfer Form">
-                    <field name="name" />
-                    <separator colspan="4"/>
-                    <field name="no_bukti_transfer" eval="Test"  />
-                    <field name="date" />
-                    <field name="province" widget="selection"/>
-                    <field name="city" widget="selection" />
-                    <separator colspan="4"/>
-                    <field name="period" />
-                    <separator colspan="4"/>
-                    <field name="receiver_bank" />
-                    <field name="receiver_bank_no" />
-                    <field name="receiver_name" />
-                    <field name="transfer_amount" />
-                    <notebook colspan="4">
-                        <page string="Description">
-                            <field name="description" nolabel="1" colspan="4" />
-                        </page>
-                    </notebook>
+                <form string="Transfer Form" version="7.0">
+                    <header>
+                		<field name="state" widget="statusbar" statusbar_visible="draft,confirmed" statusbar_colors='{"draft":"red", "confirmed":"red"}'/>
+                    </header>
+                    <sheet>
+                    	<group string="Transfer Details" colspan="2">
+	                    	<group>
+	                    		<field name="name" />
+	                    	</group>
+                    		<group/>
+                    	</group>
+                    	<group>
+                    		<group>
+                    			<field name="date" />
+                    			<field name="position" on_change="onchange_get_office(position)"/>
+			                    <field name="office" options="{'create': false, 'create_edit': false}" />
+                    		</group>
+	                    	<group>
+			                    <field name="receiver_bank" />
+			                    <field name="receiver_name" />
+			                    <field name="receiver_bank_no" />
+			                    <field name="transfer_amount" />
+	                    	</group>
+                    	</group>
+                    	<notebook attrs="{'invisible':[('state','==','draft')]}">
+                    		<page string="Transfer Confirmation"  >
+                    			<group string="Transfer Confirmation" colspan="2" >
+                    				<field name="transfer_received_date" colspan="2" />
+                   					<field name="transfer_received" colspan="2"/>
+                    			</group>
+                    		</page>
+                    	</notebook>
+                    	<notebook attrs="{'invisible':[('state','==','draft')]}">
+	                    	<page string="Kontrak">
+		                        <field name="transfer_contract_ids" nolabel="1">
+		                        	<form string="contract" version="7.0">
+		                        		<group>
+		                        			<field name="name" />
+		                        			<field name="activity"/>
+		                            		<field name="quantity" on_change="update_total_value(quantity,contract_value)"/>
+		                            		<field name="contract_value" on_change="update_total_value(quantity,contract_value)"/>
+		                            		<field name="contract_value_total"/>
+		                        		</group>
+		                            </form>
+		                            <tree string="Contract" editable="bottom">
+		                                <field name="name" />
+		                                <field name="activity"/>
+		                                <field name="quantity"/>
+		                                <field name="contract_value"/>
+		                                <field name="contract_value_total"/>
+		                            </tree>
+		                        </field>
+		                	</page>
+	                    </notebook>
+                    </sheet>
                 </form>
             </field>
         </record>
@@ -284,14 +413,15 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Transfer Tree">
-                    <field name="no_bukti_transfer" />
+                	<field name="state" />
+                	<field name="name" />
                     <field name="date" />
-                    <field name="roms" />
+                    <field name="office" />
+                    <field name="receiver_name" string="name"/>
                     <field name="receiver_bank" />
                     <field name="receiver_bank_no" string="Account No"/>
-                    <field name="receiver_name" string="name"/>
-                    <field name="transfer_amount" />
-                    <field name="period" string="Period"/>
+                    <field name="transfer_amount" string="Transfer Sent"/>
+                    <field name="transfer_received" string="Transfer Confirmed"/>
                 </tree>
             </field>
         </record>
@@ -302,46 +432,97 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
+        
+        <record model="ir.actions.act_window.view" id="transfer_list_action_tree_view">
+		    <field eval="1" name="sequence"/>
+		    <field name="view_mode">tree</field>
+		    <field name="view_id" ref="transfer_tree_view"/>
+		    <field name="act_window_id" ref="transfer_list_action"/>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="transfer_list_action_form_view">
+		    <field eval="2" name="sequence"/>
+		    <field name="view_mode">form</field>
+		    <field name="view_id" ref="transfer_form_view"/>
+		    <field name="act_window_id" ref="transfer_list_action"/>
+		</record>
 
         <menuitem id="pamsimas_menu_transaction_menu_transfer" name="Transfer" parent="pamsimas_menu_transaction_menu" action="transfer_list_action"/>
 		
 		<!-- =========================Transfer Confirmation============================= -->
         <record model="ir.ui.view" id="transferconfirmation_form_view">
             <field name="name">transferconfirmation.form</field>
-            <field name="model">pamsimas.transferconfirmation</field>
+            <field name="model">pamsimas.transfer</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Transfer Confirmation Form">
-                    <field name="name" />
-                    <separator colspan="4"/>
-                    <field name="no_bukti_transfer" eval="Test"  />
-                    <field name="date" />
-                    <field name="province" widget="selection"/>
-                    <field name="city" widget="selection"/>
-                    <separator colspan="4"/>
-                    <field name="period" />
-                    <separator colspan="4"/>
-                    <field name="receiver_bank" />
-                    <field name="receiver_bank_no" />
-                    <field name="receiver_name" />
-                    <separator colspan="4" />
-                    <field name="transfer_received_date" />
-                    <field name="transfer_received" />
-                    <notebook colspan="4">
-                    	<page string="Description">
-	                        <field name="transfer_contract_ids" nolabel="1">
-	                        	<form string="contract">
-	                            	<field name="name"/>
-	                                <separator colspan="4" />
-	                            	<field name="subcontract"/>
-	                            </form>
-	                            <tree string="Contract">
-	                                <field name="name" />
-	                                <field name="subcontract"/>
-	                            </tree>
-	                        </field>
-	                	</page>
-                    </notebook>
+                <form string="Transfer Confirmation Form" version="7.0">
+                	<header>
+                		<field name="state" widget="statusbar" statusbar_visible="draft, confirmed" statusbar_colors='{"draft":"red", "confirmed":"blue"}'/>
+                		<button name="print_report" type="object" string="print report" icon="gtk-print" attrs="{'invisible':[('state','!=','draft')]}"/>
+                		<button name="%(action_pamsimas_transfer_confirmation)d" type="action" string="Confirm Transfer" class="oe_highlight" attrs="{'invisible':[('state','!=','draft')]}"
+                				context="{
+                					'transfer_id': active_id, 
+                					'name': name, 
+                					'state': state,
+                					'date': date,
+                					'position': position,
+                					'office': office,
+                					'receiver_bank': receiver_bank,
+                					'receiver_name' : receiver_name, 
+                					'receiver_bank_no' : receiver_bank_no
+                					}"/>
+                		<button name="confirm" states="comment" string="Confirm Transaction" type="workflow" class="oe_highlight"/>
+                	</header>
+                    <sheet>
+                    	<group string="Transfer Details">
+	                    	<group>
+	                    		<field name="name" readonly="True"/>
+	                    	</group>
+                    		<group/>
+                    	</group>
+                    	<group>
+                    		<group>
+                    			<field name="date" readonly="True"/>
+                    			<field name="position" readonly="True"/>
+			                    <field name="office" readonly="True"/>
+                    		</group>
+	                    	<group>
+			                    <field name="receiver_bank" readonly="True"/>
+			                    <field name="receiver_name" readonly="True"/>
+			                    <field name="receiver_bank_no" readonly="True"/>
+	                    	</group>
+                    	</group>
+                    	<notebook attrs="{'invisible':[('state','==','draft')]}">
+                    		<page string="Transfer Confirmation"  >
+                    			<group string="Transfer Confirmation" colspan="2" >
+                    				<field name="transfer_received_date" colspan="2" />
+                   					<field name="transfer_received" colspan="2"/>
+                    			</group>
+                    		</page>
+                    	</notebook>
+                    	<notebook attrs="{'invisible':[('state','==','draft')]}">
+	                    	<page string="Kontrak">
+		                        <field name="transfer_contract_ids" nolabel="1">
+		                        	<form string="contract" version="7.0">
+		                        		<group>
+		                        			<field name="name" />
+		                        			<field name="activity"/>
+		                            		<field name="quantity" on_change="update_total_value(quantity,contract_value)"/>
+		                            		<field name="contract_value" on_change="update_total_value(quantity,contract_value)"/>
+		                            		<field name="contract_value_total"/>
+		                        		</group>
+		                            </form>
+		                            <tree string="Contract" editable="bottom">
+		                                <field name="name" />
+		                                <field name="activity"/>
+		                                <field name="quantity"/>
+		                                <field name="contract_value"/>
+		                                <field name="contract_value_total"/>
+		                            </tree>
+		                        </field>
+		                	</page>
+	                    </notebook>
+                    </sheet>
                 </form>
             </field>
         </record>
@@ -349,28 +530,42 @@
         
         <record model="ir.ui.view" id="transferconfirmation_tree_view">
             <field name="name">transferconfirmation.tree</field>
-            <field name="model">pamsimas.transferconfirmation</field>
+            <field name="model">pamsimas.transfer</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Transfer Confirmation Tree">
-                    <field name="no_bukti_transfer" />
-                    <field name="date" />
-                    <field name="roms" />
+                    <field name="state" />
+                	<field name="name" />
+                    <field name="transfer_received_date" />
+                    <field name="office" />
+                    <field name="receiver_name" string="name"/>
                     <field name="receiver_bank" />
                     <field name="receiver_bank_no" string="Account No"/>
-                    <field name="receiver_name" string="name"/>
                     <field name="transfer_received" />
-                    <field name="period" string="Period"/>
                 </tree>
             </field>
         </record>
 
         <record model="ir.actions.act_window" id="transferconfirmation_list_action">
             <field name="name">Transfer Confirmation</field>
-            <field name="res_model">pamsimas.transferconfirmation</field>
+            <field name="res_model">pamsimas.transfer</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
+        
+        <record model="ir.actions.act_window.view" id="transferconfirmation_list_action_tree_view">
+		    <field eval="1" name="sequence"/>
+		    <field name="view_mode">tree</field>
+		    <field name="view_id" ref="transferconfirmation_tree_view"/>
+		    <field name="act_window_id" ref="transferconfirmation_list_action"/>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="transferconfirmation_list_action_form_view">
+		    <field eval="2" name="sequence"/>
+		    <field name="view_mode">form</field>
+		    <field name="view_id" ref="transferconfirmation_form_view"/>
+		    <field name="act_window_id" ref="transferconfirmation_list_action"/>
+		</record>
         
         <menuitem id="pamsimas_menu_transaction_menu_transferconfirmation" name="Transfer Confirmation" parent="pamsimas_menu_transaction_menu" action="transferconfirmation_list_action"/>
 		

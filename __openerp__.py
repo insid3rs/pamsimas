@@ -8,7 +8,9 @@
     Pamsimas Application            
     """,
 
-    "data"      : ['pamsimas_view.xml'],
+    "data"      : ['pamsimas_workflow.xml',
+                   'wizard/pamsimas_transfer_confirmation.xml',
+                   'pamsimas_view.xml'],
     "demo"      : [],
     "installable"   : True,
     "auto_install"  : False,

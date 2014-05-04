@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="pamsimas_transfer_confirmation_view" model="ir.ui.view">
+            <field name="name">Transfer Confirmation</field>
+            <field name="model">pamsimas.transferconfirmation</field>
+            <field name="arch" type="xml">
+                <form string="test" version="7.0">
+                	
+                   	<group string="Transfer Details">
+                    	<group>
+                    		<field name="name" readonly="True"/>
+                    		<field name="state" />
+                    	</group>
+                   	</group>
+                   	<group>
+                   		<group>
+                   			<field name="date" readonly="True"/>
+                   			<field name="position" readonly="True"/>
+		                    <field name="office" readonly="True"/>
+                   		</group>
+                    	<group>
+		                    <field name="receiver_bank" readonly="True"/>
+		                    <field name="receiver_name" readonly="True"/>
+		                    <field name="receiver_bank_no" readonly="True"/>
+                    	</group>
+                   	</group>
+                   	<notebook>
+                   		<page string="Transfer Confirmation"  >
+                   			<group string="Transfer Confirmation" colspan="2" >
+                   				<field name="transfer_received_date" colspan="2" required="True"/>
+                  				<field name="transfer_received" required="True"/>
+                   			</group>
+                   		</page>
+                   	</notebook>
+                   	<notebook>
+                    	<page string="Kontrak">
+	                        <field name="transfer_contract_ids" nolabel="1">
+	                        	<form string="contract" version="7.0">
+	                        		<group>
+	                        			<field name="name" />
+	                        			<field name="activity"/>
+	                            		<field name="quantity" on_change="update_total_value(quantity,contract_value)"/>
+	                            		<field name="contract_value" on_change="update_total_value(quantity,contract_value)"/>
+	                            		<field name="contract_value_total"/>
+	                        		</group>
+	                            </form>
+	                            <tree string="Contract" >
+	                                <field name="name" />
+	                                <field name="activity"/>
+	                                <field name="quantity"/>
+	                                <field name="contract_value"/>
+	                                <field name="contract_value_total"/>
+	                            </tree>
+	                        </field>
+	                	</page>
+                    </notebook>
+                    <footer>
+                		<button string="cancel" special="cancel" class="oe_highlight"/>
+                		<button name="confirm_transaction" states="draft" string="Confirm Transaction" type="object" class="oe_highlight"/>
+                		</footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_pamsimas_transfer_confirmation" model="ir.actions.act_window">
+            <field name="name">Transfer Confirmation</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pamsimas.transferconfirmation</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</openerp>
