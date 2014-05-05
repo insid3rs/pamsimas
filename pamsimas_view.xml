@@ -2,7 +2,7 @@
 <openerp>
     <data>
 
-        <menuitem id="pamsimas_menu" name="Master Data" />
+        <menuitem id="pamsimas_menu" name="Master Data" groups="group_pmu"/>
         <menuitem id="pamsimas_menu_regional" name="Regional" parent="pamsimas_menu" />
         <menuitem id="pamsimas_menu_contract" name="Contract" parent="pamsimas_menu" />
         <menuitem id="pamsimas_menu_user" name="User" parent="pamsimas_menu" />
@@ -32,9 +32,9 @@
 				<xpath expr="/form/sheet/group" position="before">
 					<group>
 						<group>
-							<field name="user_type" />
-							<field name="position" on_change="onchange_get_office(position)" attrs="{'invisible': [('user_type','!=', 'regional')]}" />
-			                <field name="office" options="{'create': false, 'create_edit': false}" attrs="{'invisible': [('user_type','!=', 'regional')]}"/>
+							<field name="user_type" on_change="onchange_get_position(user_type)" domain="[('category_id.name', 'ilike', 'Pamsimas')]"/>
+							<field name="position" on_change="onchange_get_office(position)" attrs="{'invisible': [('user_type','!=', 13)]}" />
+			                <field name="office" options="{'create': false, 'create_edit': false}" attrs="{'invisible': [('user_type','!=', 13)]}"/>
 						</group>
 						<group>
 							<separator />
@@ -421,7 +421,7 @@
 		    <field name="act_window_id" ref="transfer_list_action"/>
 		</record>
 
-        <menuitem id="pamsimas_menu_transaction_menu_transfer" name="Transfer" parent="pamsimas_menu_transaction_menu" action="transfer_list_action"/>
+        <menuitem id="pamsimas_menu_transaction_menu_transfer" name="Transfer" parent="pamsimas_menu_transaction_menu" action="transfer_list_action" groups="group_firm,group_pmu"/>
 		
 		<!-- =========================Transfer Confirmation============================= -->
         <record model="ir.ui.view" id="transferconfirmation_form_view">
@@ -541,7 +541,7 @@
 		    <field name="act_window_id" ref="transferconfirmation_list_action"/>
 		</record>
         
-        <menuitem id="pamsimas_menu_transaction_menu_transferconfirmation" name="Transfer Confirmation" parent="pamsimas_menu_transaction_menu" action="transferconfirmation_list_action"/>
+        <menuitem id="pamsimas_menu_transaction_menu_transferconfirmation" name="Transfer Confirmation" parent="pamsimas_menu_transaction_menu" action="transferconfirmation_list_action" groups="group_regional,group_pmu"/>
 		
 		<menuitem id="pamsimas_menu_report_menu_firm" name="Report Firm" parent="pamsimas_menu_report_menu" action="user_list_action"/>
 		

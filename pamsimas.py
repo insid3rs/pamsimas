@@ -6,19 +6,36 @@ class res_users(osv.Model):
     
     def onchange_get_position(self, cr, uid, ids, user_type, context=None):
         
-        office = []
         res ={} 
+        print self
         
-        if user_type == "pmu":
+        
+        
+        #print user_type
+        if user_type == 13:
+            self.write(cr, uid, ids, { 'groups_id' : [(3, 14)] })
+            self.write(cr, uid, ids, { 'groups_id' : [(3, 15)] })
+            self.write(cr, uid, ids, { 'groups_id' : [(4, 13)] })
+            return {}
+        if user_type == 14:
+            self.write(cr, uid, ids, { 'groups_id' : [(3, 13)] })
+            self.write(cr, uid, ids, { 'groups_id' : [(3, 15)] })
+            self.write(cr, uid, ids, { 'groups_id' : [(4, 14)] })
             res['position'] = False
             res['office'] = False
-        if user_type == "firm":
+        if user_type == 15:
+            self.write(cr, uid, ids, { 'groups_id' : [(3, 13)] })
+            self.write(cr, uid, ids, { 'groups_id' : [(3, 14)] })
+            self.write(cr, uid, ids, { 'groups_id' : [(4, 15)] })
             res['position'] = False
             res['office'] = False
             
         return {'value':res} 
     
     def onchange_get_office(self, cr, uid, ids, position, context=None):
+        
+        if position == False:
+            return {}
         
         office = []
         
@@ -44,9 +61,11 @@ class res_users(osv.Model):
     
     
     _columns = {
-        'user_type'     : fields.selection((('pmu', 'PMU'), ('firm','Firm'), ('regional','Regional')),'User Type', required = True),
+        'user_type'         : fields.many2one('res.groups', 'Group',required = True),
+        #'user_type'     : fields.selection((('pmu', 'PMU'), ('firm','Firm'), ('regional','Regional')),'User Type', required = True),
         'position'      : fields.selection((('roms', 'Roms'), ('province','Province'), ('city','City/Kabupaten')),'Position'),
         'office'        : fields.many2one('pamsimas.regional', 'Office'),
+        
     }
     
 

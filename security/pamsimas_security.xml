@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+	
+	<record model="ir.module.category" id="module_category_pamsimas">
+		<field name="name">Pamsimas</field>
+        <field name="description">World Bank Application</field>
+        <field name="sequence">16</field>
+	</record>
+	
+	<record model="res.groups" id="base.group_user">
+        <field name="comment">the user will be able to manage his own human resources stuff (leave request, timesheets, ...), if he is linked to an employee in the system.</field>
+    </record>
+    
+	<record id="group_regional" model="res.groups"> 
+		<field name="name">Regional</field>
+        <field name="category_id" ref="module_category_pamsimas"/>
+    </record>
+    
+    <record id="group_firm" model="res.groups"> 
+		<field name="name">Firm</field>
+        <field name="category_id" ref="module_category_pamsimas"/>
+    </record>
+    
+    <record id="group_pmu" model="res.groups"> 
+		<field name="name">PMU</field>
+        <field name="category_id" ref="module_category_pamsimas"/>
+    </record>
+
+</data>
+</openerp>
