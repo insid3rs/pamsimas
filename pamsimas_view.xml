@@ -525,6 +525,7 @@
             <field name="res_model">pamsimas.transfer</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="domain"></field>
         </record>
         
         <record model="ir.actions.act_window.view" id="transferconfirmation_list_action_tree_view">

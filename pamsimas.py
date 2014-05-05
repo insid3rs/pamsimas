@@ -222,7 +222,6 @@ class Transfer(osv.osv):
         'transfer_received_date' : fields.date('Transfer Received Date'),
         'transfer_received' : fields.char('Transfer Received'),
         
-        
         'transfer_contract_ids'  : fields.one2many('pamsimas.contract','contract_id','Transfer Contract', ondelete='cascade'),
         
         'description'   : fields.text('Description'),
