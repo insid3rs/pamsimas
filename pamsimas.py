@@ -1,13 +1,25 @@
 from openerp.osv import osv, fields
-
-class res_partner(osv.Model):
-    _inherit = 'res.partner'
-    _columns = {
-        'keterangan' : fields.char('Keterangan'),
-    }
-
-class RegionalUser(osv.osv):
+    
+class res_users(osv.Model):
+    _inherit = 'res.users'
+    _order = 'user_type'
+    
+    def onchange_get_position(self, cr, uid, ids, user_type, context=None):
+        
+        office = []
+        res ={} 
+        
+        if user_type == "pmu":
+            res['position'] = False
+            res['office'] = False
+        if user_type == "firm":
+            res['position'] = False
+            res['office'] = False
+            
+        return {'value':res} 
+    
     def onchange_get_office(self, cr, uid, ids, position, context=None):
+        
         office = []
         
         obj = self.pool.get('pamsimas.regional')
@@ -30,14 +42,13 @@ class RegionalUser(osv.osv):
         #return {'value': res}
         return {'value':res, 'domain': {'office': domain}} 
     
-    _name = 'pamsimas.regionaluser'
-    _description    = 'Regional User'
-    _columns         = {
-        'name'          : fields.char('User', size=128, required = True),
+    
+    _columns = {
+        'user_type'     : fields.selection((('pmu', 'PMU'), ('firm','Firm'), ('regional','Regional')),'User Type', required = True),
         'position'      : fields.selection((('roms', 'Roms'), ('province','Province'), ('city','City/Kabupaten')),'Position'),
         'office'        : fields.many2one('pamsimas.regional', 'Office'),
-        'description'   : fields.text('Description'),
     }
+    
 
 class ROMS(osv.osv):
     _name           = 'pamsimas.roms'

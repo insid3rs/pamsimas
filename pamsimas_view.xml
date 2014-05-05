@@ -13,92 +13,66 @@
 		<menuitem id="pamsimas_menu_report" name="Report" />
 		<menuitem id="pamsimas_menu_report_menu" name="Report" parent="pamsimas_menu_report" />
 		
-        <!-- =========================firm============================= -->
+        <!-- =========================User============================= -->
         
-        <record model="ir.ui.view" id="firm_form_partner_view" >
-            <field name="name">res.partner.form</field>
-            <field name="model">res.partner</field>
+        <record model="ir.ui.view" id="firm_form_users_view" >
+            <field name="name">res.users.form</field>
+            <field name="model">res.users</field>
             <field name="type">form</field>
-            <field name="inherit_id" ref="base.view_partner_form" />
+            <field name="inherit_id" ref="base.view_users_simple_form" />
             <field name="arch" type="xml">
-                <xpath expr="/form/sheet/group/group/field[@name='website']"
-					position="after">
-					<field name="keterangan"/>	
+            	<xpath expr="/form/sheet/div/field[@name='category_id']" position="before">
+            		<separator />
+	                <label for="login" string="Username"/>
+	                <field name="login" default_focus="1" placeholder="UserName" string="Username"/>
+	        		<label for="new_password"/>
+		            <field name="new_password" placeholder="Password"/>
+		            <separator />
 				</xpath>
-				<xpath expr="/form/sheet/notebook/page[@string='Contacts']"
-					position="attributes">
-					<attribute name="invisible">1</attribute>
+				<xpath expr="/form/sheet/group" position="before">
+					<group>
+						<group>
+							<field name="user_type" />
+							<field name="position" on_change="onchange_get_office(position)" attrs="{'invisible': [('user_type','!=', 'regional')]}" />
+			                <field name="office" options="{'create': false, 'create_edit': false}" attrs="{'invisible': [('user_type','!=', 'regional')]}"/>
+						</group>
+						<group>
+							<separator />
+						</group>
+					</group>
+				</xpath>
+				<xpath expr="/form/sheet/div/field[@name='category_id']" position="replace">
+				</xpath>
+				<xpath expr="/form/sheet/group/group/field[@name='website']" position="replace">
 				</xpath>
             </field>
         </record>   
         
-        <record model="ir.ui.view" id="firm_tree_partner_view">
-            <field name="name">res.partner.tree</field>
-            <field name="model">res.partner</field>
+        <record model="ir.ui.view" id="firm_tree_users_view">
+            <field name="name">res.users.tree</field>
+            <field name="model">res.users</field>
             <field name="type">tree</field>
-            <field name="inherit_id" ref="base.view_partner_tree" /> 
+            <field name="inherit_id" ref="base.view_users_tree" /> 
             <field name="arch" type="xml">
-            	 <field name="name" position="after"> 
-            	 </field>
+            	<xpath expr="/tree/field[@name='name']" position="before">
+            		<field name="user_type" />
+            		<field name="office" />
+				</xpath>
+            	<xpath expr="/tree/field[@name='lang']" position="replace">
+				</xpath>
             </field>
         </record>
         
-        <record model="ir.actions.act_window" id="firm_list_action">
+        <record model="ir.actions.act_window" id="user_list_action">
             <field name="name">Firm</field>
-            <field name="res_model">res.partner</field>
+            <field name="res_model">res.users</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem id="pamsimas_menu_user_firm" name="Firm" parent="pamsimas_menu_user" action="firm_list_action" />
+        <menuitem id="pamsimas_menu_user_firm" name="User" parent="pamsimas_menu_user" action="user_list_action" />
 
-        <!-- =========================Regional User============================= -->
-       	<record model="ir.ui.view" id="regionaluser_form_view">
-            <field name="name">regionaluser.form</field>
-            <field name="model">pamsimas.regionaluser</field>
-            <field name="type">form</field>
-            <field name="arch" type="xml">
-                <form string="Regionaluser Form" version="7.0">
-                	<sheet>
-                		<group>
-                			<group string="Regional User">
-			                    <field name="name" />
-			                    <field name="position" on_change="onchange_get_office(position)"/>
-			                    <field name="office" options="{'create': false, 'create_edit': false}" />
-		                    </group>
-		                    <group/>
-	                    </group>
-	                    <notebook colspan="4">
-	                        <page string="Description">
-	                            <field name="description" nolabel="1" colspan="4" />
-	                        </page>				
-	                    </notebook>
-	           		</sheet>
-                </form>
-            </field>
-        </record>
         
-
-        <record model="ir.ui.view" id="regionaluser_tree_view">
-            <field name="name">regionaluser.tree</field>
-            <field name="model">pamsimas.regionaluser</field>
-            <field name="type">tree</field>
-            <field name="arch" type="xml">
-                <tree string="Regionaluser Tree">
-                	<field name="office" />
-                    <field name="name" />
-                </tree>
-            </field>
-        </record>
-
-        <record model="ir.actions.act_window" id="regionaluser_list_action">
-            <field name="name">Regional User</field>
-            <field name="res_model">pamsimas.regionaluser</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-        <menuitem id="pamsimas_menu_user_regionaluser" name="Regional User" parent="pamsimas_menu_user" action="regionaluser_list_action"/>
-
 		<!-- =========================ROMS============================= -->
        	<record model="ir.ui.view" id="roms_form_view">
             <field name="name">roms.form</field>
@@ -569,7 +543,7 @@
         
         <menuitem id="pamsimas_menu_transaction_menu_transferconfirmation" name="Transfer Confirmation" parent="pamsimas_menu_transaction_menu" action="transferconfirmation_list_action"/>
 		
-		<menuitem id="pamsimas_menu_report_menu_firm" name="Report Firm" parent="pamsimas_menu_report_menu" action="firm_list_action"/>
+		<menuitem id="pamsimas_menu_report_menu_firm" name="Report Firm" parent="pamsimas_menu_report_menu" action="user_list_action"/>
 		
     </data>
 </openerp>
