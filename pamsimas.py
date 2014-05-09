@@ -6,29 +6,29 @@ class res_users(osv.Model):
     
     def onchange_get_position(self, cr, uid, ids, user_type, context=None):
         
-        res ={} 
-        print self
-        
-        
+        obj = self.pool.get('res.groups')
+        category_id = obj.search(cr, uid, [('category_id.name', 'ilike', 'Pamsimas')], context=context)
+        category = obj.browse(cr, uid, category_id, context=context)
         
         #print user_type
-        if user_type == 13:
-            self.write(cr, uid, ids, { 'groups_id' : [(3, 14)] })
-            self.write(cr, uid, ids, { 'groups_id' : [(3, 15)] })
-            self.write(cr, uid, ids, { 'groups_id' : [(4, 13)] })
-            return {}
-        if user_type == 14:
-            self.write(cr, uid, ids, { 'groups_id' : [(3, 13)] })
-            self.write(cr, uid, ids, { 'groups_id' : [(3, 15)] })
-            self.write(cr, uid, ids, { 'groups_id' : [(4, 14)] })
-            res['position'] = False
-            res['office'] = False
-        if user_type == 15:
-            self.write(cr, uid, ids, { 'groups_id' : [(3, 13)] })
-            self.write(cr, uid, ids, { 'groups_id' : [(3, 14)] })
-            self.write(cr, uid, ids, { 'groups_id' : [(4, 15)] })
-            res['position'] = False
-            res['office'] = False
+        res ={}
+        for o in category:
+            #print o.id
+            if o.id == user_type:
+                self.write(cr, uid, ids, { 'groups_id' : [(4, o.id)] })
+            else:    
+                self.write(cr, uid, ids, { 'groups_id' : [(3, o.id)] })
+        
+        for o in category:
+            #print o.name
+            if (o.id == user_type) & (o.name == 'Regional'):
+                print 'regional'
+                res['position'] = 'roms'
+            if (o.id == user_type) & (o.name != 'Regional'):
+                res['position'] = False
+                res['office'] = False
+                print 'not regional'
+        
             
         return {'value':res} 
     
@@ -57,11 +57,13 @@ class res_users(osv.Model):
             domain = [('roms','!=',False),('province','!=',False),('city','!=',False)]
             
         #return {'value': res}
-        return {'value':res, 'domain': {'office': domain}} 
+        return {'value':res, 'domain': {'office': domain}}
+    
+    
     
     
     _columns = {
-        'user_type'         : fields.many2one('res.groups', 'Group',required = True),
+        'user_type'         : fields.many2one('res.groups', 'Group'),
         #'user_type'     : fields.selection((('pmu', 'PMU'), ('firm','Firm'), ('regional','Regional')),'User Type', required = True),
         'position'      : fields.selection((('roms', 'Roms'), ('province','Province'), ('city','City/Kabupaten')),'Position'),
         'office'        : fields.many2one('pamsimas.regional', 'Office'),
@@ -186,6 +188,30 @@ class Transfer(osv.osv):
         #return {'value': res}
         return {'value':res, 'domain': {'office': domain}} 
     
+    def onchange_get_officer(self, cr, uid, ids, office_id, context=None):
+        
+        if office_id == False:
+            return {}
+        
+        obj = self.pool.get('res.users')
+        user_id = obj.search(cr, uid, [], context=context)
+        users = obj.browse(cr, uid, user_id, context=context)
+        
+        res ={} 
+        res['officer_name'] = 0
+        
+        #print users.office.detail
+        
+        domain = [('office','=',office_id)]
+        
+        #print office
+        #for o in users:
+        #    print o.office.id
+        #    res['office'] = o.roms.name
+            
+        #return {'value': res}
+        return {'value':res, 'domain': {'officer_name': domain}} 
+    
     def print_report(self, cr, uid, ids, context=None):
         datas = {
              'ids': context.get('active_ids',[]),
@@ -199,6 +225,21 @@ class Transfer(osv.osv):
             'datas': datas,
         }
     
+    def _get_office(self, cr, uid, ids, field_name, arg, context=None):
+        res ={}
+        
+        obj = self.pool.get('res.users')
+        office_obj = obj.browse(cr, uid, uid, context=context)
+        
+        
+        test = self.pool.get('res.users').browse(cr, uid, uid, context=context).office.detail
+        print test
+        print office_obj.office.detail
+        
+        for line in self.browse(cr, uid, ids, context):
+                res[line.id] = office_obj.office.detail
+
+        return res
     
     _name   = 'pamsimas.transfer'
     _description = 'Pamsimas Transfer' 
@@ -213,6 +254,7 @@ class Transfer(osv.osv):
         
         'position'      : fields.selection((('roms', 'Roms'), ('province','Province'), ('city','City/Kabupaten')),'Position'),
         'office'        : fields.many2one('pamsimas.regional', 'Office'),
+        'officer_name'  : fields.many2one('res.users', 'Officer Name'),
         
         'receiver_bank' : fields.char('Receiver Bank'),
         'receiver_bank_no': fields.char('Receiver Account Number'),
@@ -225,10 +267,14 @@ class Transfer(osv.osv):
         'transfer_contract_ids'  : fields.one2many('pamsimas.contract','contract_id','Transfer Contract', ondelete='cascade'),
         
         'description'   : fields.text('Description'),
+        'sender_id'        : fields.char('Sender', invisible=True),
+        
+        'temp_office' : fields.function(_get_office, string="temp office", type='char')
     }
     
     _defaults = {
-        'state': 'draft'
+        'state': 'draft',
+        'sender_id':  lambda self, cr, uid, context: context.get('uid', False),
     }
     
     def transfer_confirm(self, cr, uid, ids, context=None):

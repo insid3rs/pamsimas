@@ -32,9 +32,9 @@
 				<xpath expr="/form/sheet/group" position="before">
 					<group>
 						<group>
-							<field name="user_type" on_change="onchange_get_position(user_type)" domain="[('category_id.name', 'ilike', 'Pamsimas')]"/>
-							<field name="position" on_change="onchange_get_office(position)" attrs="{'invisible': [('user_type','!=', 13)]}" />
-			                <field name="office" options="{'create': false, 'create_edit': false}" attrs="{'invisible': [('user_type','!=', 13)]}"/>
+							<field name="user_type" on_change="onchange_get_position(user_type)" domain="[('category_id.name', 'ilike', 'Pamsimas')]" required="True"/>
+							<field name="position" on_change="onchange_get_office(position)" attrs="{'invisible': [('position','!=', 'roms')]}" />
+			                <field name="office" options="{'create': false, 'create_edit': false}" attrs="{'invisible': [('position','!=', 'roms')]}"/>
 						</group>
 						<group>
 							<separator />
@@ -330,6 +330,7 @@
                     	<group string="Transfer Details" colspan="2">
 	                    	<group>
 	                    		<field name="name" />
+	                    		<field name="sender_id"/>
 	                    	</group>
                     		<group/>
                     	</group>
@@ -337,7 +338,8 @@
                     		<group>
                     			<field name="date" />
                     			<field name="position" on_change="onchange_get_office(position)"/>
-			                    <field name="office" options="{'create': false, 'create_edit': false}" />
+			                    <field name="office" on_change="onchange_get_officer(office)" options="{'create': false, 'create_edit': false}" />
+			                    <field name="officer_name" />
                     		</group>
 	                    	<group>
 			                    <field name="receiver_bank" />
@@ -451,6 +453,7 @@
                     	<group string="Transfer Details">
 	                    	<group>
 	                    		<field name="name" readonly="True"/>
+	                    		<field name="temp_office" />
 	                    	</group>
                     		<group/>
                     	</group>
@@ -525,7 +528,7 @@
             <field name="res_model">pamsimas.transfer</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="domain"></field>
+            <field name="domain">[('officer_name.id','=',uid)]</field>
         </record>
         
         <record model="ir.actions.act_window.view" id="transferconfirmation_list_action_tree_view">
