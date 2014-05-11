@@ -9,7 +9,6 @@ from report_webkit import webkit_report
 from osv import fields, osv
 
 class report_transfer(report_sxw.rml_parse):
-    _name = 'report.pamsimas.report_transfer'
     
     def __init__(self, cr, uid, name, context=None):
         super(report_transfer, self).__init__(cr, uid, name, context=context)
@@ -22,5 +21,5 @@ class report_transfer(report_sxw.rml_parse):
 
 report_sxw.report_sxw('report.pamsimas.report_transfer', 
                       'pamsimas.transfer', 
-                      'addons/pamsimas/report/report_transfer.mako', 
+                      'addons/pamsimas/report/coba.rml', 
                       parser=report_transfer)

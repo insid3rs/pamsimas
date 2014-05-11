@@ -221,7 +221,6 @@ class Transfer(osv.osv):
         return {
             'type': 'ir.actions.report.xml',
             'report_name': 'pamsimas.report_transfer',
-            'report_type': 'webkit',
             'datas': datas,
         }
     

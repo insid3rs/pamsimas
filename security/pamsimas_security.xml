@@ -21,6 +21,7 @@
     <record id="group_pmu" model="res.groups"> 
 		<field name="name">PMU</field>
         <field name="category_id" ref="module_category_pamsimas"/>
+        <field name="implied_ids" eval="[(4, ref('group_firm'))]"/>
     </record>
     
 	<record id="transfer_firm_rule" model="ir.rule">
