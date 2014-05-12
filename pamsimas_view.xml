@@ -33,8 +33,8 @@
 					<group>
 						<group>
 							<field name="user_type" on_change="onchange_get_position(user_type)" domain="[('category_id.name', 'ilike', 'Pamsimas')]" required="True"/>
-							<field name="position" on_change="onchange_get_office(position)" attrs="{'invisible': [('position','!=', 'roms')]}" />
-			                <field name="office" options="{'create': false, 'create_edit': false}" attrs="{'invisible': [('position','!=', 'roms')]}"/>
+							<field name="position" on_change="onchange_get_office(position)" attrs="{'invisible': [('position','=', False)]}" />
+			                <field name="office" options="{'create': false, 'create_edit': false}" attrs="{'invisible': [('position','=', False)]}"/>
 						</group>
 						<group>
 							<separator />
@@ -339,7 +339,7 @@
                     			<field name="date" />
                     			<field name="position" on_change="onchange_get_office(position)"/>
 			                    <field name="office" on_change="onchange_get_officer(office)" options="{'create': false, 'create_edit': false}" />
-			                    <field name="officer_name" />
+			                    <field name="officer_name" required="True" domain="[('name', '=', '')]" options="{'create': false, 'create_edit': false}"/>
                     		</group>
 	                    	<group>
 			                    <field name="receiver_bank" />
@@ -482,8 +482,7 @@
 		                        <field name="transfer_contract_ids" nolabel="1">
 		                        	<form string="contract" version="7.0">
 		                        		<group>
-		                        			<field name="name" />
-		                        			<field name="activity"/>
+		                        			<field name="name" options="{'create': false, 'create_edit': false}"/>
 		                            		<field name="quantity" on_change="update_total_value(quantity,contract_value)"/>
 		                            		<field name="contract_value" on_change="update_total_value(quantity,contract_value)"/>
 		                            		<field name="contract_value_total"/>
@@ -491,7 +490,6 @@
 		                            </form>
 		                            <tree string="Contract" editable="bottom">
 		                                <field name="name" />
-		                                <field name="activity"/>
 		                                <field name="quantity"/>
 		                                <field name="contract_value"/>
 		                                <field name="contract_value_total"/>

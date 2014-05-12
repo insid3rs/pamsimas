@@ -10,7 +10,7 @@ class res_users(osv.Model):
         category_id = obj.search(cr, uid, [('category_id.name', 'ilike', 'Pamsimas')], context=context)
         category = obj.browse(cr, uid, category_id, context=context)
         
-        #print user_type
+        #print "=============="+user_type
         res ={}
         for o in category:
             #print o.id
@@ -258,10 +258,10 @@ class Transfer(osv.osv):
         'receiver_bank' : fields.char('Receiver Bank'),
         'receiver_bank_no': fields.char('Receiver Account Number'),
         'receiver_name' : fields.char('Receiver Name'),
-        'transfer_amount' : fields.char('Transfer Amount'),
+        'transfer_amount' : fields.float('Transfer Amount', digits=(4,2)),
         
         'transfer_received_date' : fields.date('Transfer Received Date'),
-        'transfer_received' : fields.char('Transfer Received'),
+        'transfer_received' : fields.float('Transfer Amount', digits=(4,2)),
         
         'transfer_contract_ids'  : fields.one2many('pamsimas.contract','contract_id','Transfer Contract', ondelete='cascade'),
         
