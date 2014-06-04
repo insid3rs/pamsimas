@@ -44,7 +44,7 @@
 	                            		<field name="contract_value_total"/>
 	                        		</group>
 	                            </form>
-	                            <tree string="Contract" >
+	                            <tree string="Contract" editable="bottom">
 	                                <field name="name" />
 	                                <field name="quantity"/>
 	                                <field name="contract_value"/>

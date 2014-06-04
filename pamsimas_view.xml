@@ -64,7 +64,7 @@
         </record>
         
         <record model="ir.actions.act_window" id="user_list_action">
-            <field name="name">Firm</field>
+            <field name="name">User</field>
             <field name="res_model">res.users</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
@@ -356,24 +356,22 @@
                     			</group>
                     		</page>
                     	</notebook>
-                    	<notebook attrs="{'invisible':[('state','==','draft')]}">
+                    	<notebook>
 	                    	<page string="Kontrak">
 		                        <field name="transfer_contract_ids" nolabel="1">
 		                        	<form string="contract" version="7.0">
 		                        		<group>
 		                        			<field name="name" />
-		                        			<field name="activity"/>
 		                            		<field name="quantity" on_change="update_total_value(quantity,contract_value)"/>
 		                            		<field name="contract_value" on_change="update_total_value(quantity,contract_value)"/>
-		                            		<field name="contract_value_total"/>
-		                        		</group>
+		                            		<field name="received_contract_value" readonly="True"/>
+		                            	</group>
 		                            </form>
 		                            <tree string="Contract" editable="bottom">
 		                                <field name="name" />
-		                                <field name="activity"/>
 		                                <field name="quantity"/>
 		                                <field name="contract_value"/>
-		                                <field name="contract_value_total"/>
+		                                <field name="received_contract_value" readonly="True"/>
 		                            </tree>
 		                        </field>
 		                	</page>
@@ -407,6 +405,7 @@
             <field name="res_model">pamsimas.transfer</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
         </record>
         
         <record model="ir.actions.act_window.view" id="transfer_list_action_tree_view">
@@ -431,22 +430,11 @@
             <field name="model">pamsimas.transfer</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Transfer Confirmation Form" version="7.0">
+                <form string="Transfer Confirmation Form" version="7.0" create="false">
                 	<header>
                 		<field name="state" widget="statusbar" statusbar_visible="draft, confirmed" statusbar_colors='{"draft":"red", "confirmed":"blue"}'/>
-                		<button name="print_report" type="object" string="print report" icon="gtk-print" attrs="{'invisible':[('state','!=','draft')]}"/>
-                		<button name="%(action_pamsimas_transfer_confirmation)d" type="action" string="Confirm Transfer" class="oe_highlight" attrs="{'invisible':[('state','!=','draft')]}"
-                				context="{
-                					'transfer_id': active_id, 
-                					'name': name, 
-                					'state': state,
-                					'date': date,
-                					'position': position,
-                					'office': office,
-                					'receiver_bank': receiver_bank,
-                					'receiver_name' : receiver_name, 
-                					'receiver_bank_no' : receiver_bank_no
-                					}"/>
+                		<button name="print_report" type="object" string="print report" icon="gtk-print" />
+                		<button name="transfer_confirm" string="Confirm Transaction" type="object" class="oe_highlight" attrs="{'invisible':[('transfer_received','=',0)]}" />
                 		<button name="confirm" states="comment" string="Confirm Transaction" type="workflow" class="oe_highlight"/>
                 	</header>
                     <sheet>
@@ -469,30 +457,29 @@
 			                    <field name="receiver_bank_no" readonly="True"/>
 	                    	</group>
                     	</group>
-                    	<notebook attrs="{'invisible':[('state','==','draft')]}">
+                    	<notebook>
                     		<page string="Transfer Confirmation"  >
                     			<group string="Transfer Confirmation" colspan="2" >
-                    				<field name="transfer_received_date" colspan="2" />
-                   					<field name="transfer_received" colspan="2"/>
+                    				<field name="transfer_received_date" colspan="2" attrs="{'required':[('state','==','draft')]}"/>
+                   					<field name="transfer_received" colspan="2" attrs="{'required':[('state','==','draft')]}"/>
                     			</group>
                     		</page>
                     	</notebook>
-                    	<notebook attrs="{'invisible':[('state','==','draft')]}">
+                    	<notebook >
 	                    	<page string="Kontrak">
 		                        <field name="transfer_contract_ids" nolabel="1">
 		                        	<form string="contract" version="7.0">
 		                        		<group>
 		                        			<field name="name" options="{'create': false, 'create_edit': false}"/>
 		                            		<field name="quantity" on_change="update_total_value(quantity,contract_value)"/>
-		                            		<field name="contract_value" on_change="update_total_value(quantity,contract_value)"/>
-		                            		<field name="contract_value_total"/>
+		                            		<field name="received_contract_value" on_change="update_total_value(quantity,contract_value)"/>
+		                            		
 		                        		</group>
 		                            </form>
 		                            <tree string="Contract" editable="bottom">
 		                                <field name="name" />
 		                                <field name="quantity"/>
-		                                <field name="contract_value"/>
-		                                <field name="contract_value_total"/>
+		                                <field name="received_contract_value"/>
 		                            </tree>
 		                        </field>
 		                	</page>
@@ -526,7 +513,7 @@
             <field name="res_model">pamsimas.transfer</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="domain">[('officer_name.id','=',uid)]</field>
+            <field name="domain">[]</field>
         </record>
         
         <record model="ir.actions.act_window.view" id="transferconfirmation_list_action_tree_view">
@@ -545,7 +532,10 @@
         
         <menuitem id="pamsimas_menu_transaction_menu_transferconfirmation" name="Transfer Confirmation" parent="pamsimas_menu_transaction_menu" action="transferconfirmation_list_action" groups="group_regional,group_pmu"/>
 		
+		<menuitem id="pamsimas_menu_report_menu_regional" name="Report Regional" parent="pamsimas_menu_report_menu" action="user_list_action"/>
 		<menuitem id="pamsimas_menu_report_menu_firm" name="Report Firm" parent="pamsimas_menu_report_menu" action="user_list_action"/>
+		<menuitem id="pamsimas_menu_report_menu_pmu" name="Report PMU" parent="pamsimas_menu_report_menu" action="user_list_action"/>
+		
 		
     </data>
 </openerp>

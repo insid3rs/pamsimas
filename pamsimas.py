@@ -148,6 +148,7 @@ class Regional(osv.osv):
     _name           = 'pamsimas.regional'
     _description    = 'Region'
     _rec_name = 'detail'
+    _order = 'name asc'
     _columns         = {
         'name'          : fields.char('Regional ID', required = True, domain="[('name', 'in', [roms])]" ),
         'detail'        : fields.char('Detail'),
@@ -177,13 +178,17 @@ class Transfer(osv.osv):
         #for o in offices:
         #    print o.name
         #    res['office'] = o.roms.name
+        
+        
+        username = self.pool.get('res.users').browse(cr,uid,uid).name
+        print "#####"+username    
             
         if position == "roms":
-            domain = [('roms','!=',False),('province','=',False),('city','=',False)]
+            domain = [('roms','=',username),('province','=',False),('city','=',False)]
         if position == "province":
-            domain = [('roms','!=',False),('province','!=',False),('city','=',False)]
+            domain = [('roms','=',username),('province','!=',False),('city','=',False)]
         if position == "city":
-            domain = [('roms','!=',False),('province','!=',False),('city','!=',False)]
+            domain = [('roms','=',username),('province','!=',False),('city','!=',False)]
             
         #return {'value': res}
         return {'value':res, 'domain': {'office': domain}} 
@@ -223,6 +228,7 @@ class Transfer(osv.osv):
             'report_name': 'pamsimas.report_transfer',
             'datas': datas,
         }
+
     
     def _get_office(self, cr, uid, ids, field_name, arg, context=None):
         res ={}
@@ -242,6 +248,7 @@ class Transfer(osv.osv):
     
     _name   = 'pamsimas.transfer'
     _description = 'Pamsimas Transfer' 
+    _order = 'state desc, date desc'
     _columns    = {
         'name'          : fields.char('No Bukti Transfer', size=128, required = True),
         'state'         : fields.selection([('draft','Not confirmed'),('confirmed','Confirmed')],'State',required=True,readonly=True, track_visibility='onchange'),
@@ -298,6 +305,7 @@ class Contract(osv.osv):
         'activity'      : fields.selection((('0',''),('1', 'Spot Checking Province to Disctict'), ('2', 'Spot Checking District to Village')), 'Activity'),
         'quantity'      : fields.integer('Quantity'),
         'contract_value': fields.float('Contract Value'),
+        'received_contract_value' : fields.float('Received Value'),
         'contract_value_total': fields.float('Total Value'),
         'description'   : fields.text('Description'),
         'contract_id'  : fields.many2one('pamsimas.transfer', 'Contract', ondelete='cascade'),
