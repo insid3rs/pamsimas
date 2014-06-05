@@ -2,10 +2,10 @@
 <openerp>
     <data>
 
-        <menuitem id="pamsimas_menu" name="Master Data" groups="group_pmu"/>
-        <menuitem id="pamsimas_menu_regional" name="Regional" parent="pamsimas_menu" />
-        <menuitem id="pamsimas_menu_contract" name="Contract" parent="pamsimas_menu" />
-        <menuitem id="pamsimas_menu_user" name="User" parent="pamsimas_menu" />
+        <menuitem id="pamsimas_menu" name="Master Data" groups="group_pmu,group_firm"/>
+        <menuitem id="pamsimas_menu_regional" name="Regional" parent="pamsimas_menu" groups="group_pmu"/>
+        <menuitem id="pamsimas_menu_contract" name="Contract" parent="pamsimas_menu" groups="group_pmu"/>
+        <menuitem id="pamsimas_menu_user" name="User" parent="pamsimas_menu" groups="group_pmu,group_firm"/>
         
         <menuitem id="pamsimas_menu_transaction" name="Transaction" />
 		<menuitem id="pamsimas_menu_transaction_menu" name="Transaction" parent="pamsimas_menu_transaction" />
@@ -23,21 +23,24 @@
             <field name="arch" type="xml">
             	<xpath expr="/form/sheet/div/field[@name='category_id']" position="before">
             		<separator />
-	                <label for="login" string="Username"/>
-	                <field name="login" default_focus="1" placeholder="UserName" string="Username"/>
-	        		<label for="new_password"/>
-		            <field name="new_password" placeholder="Password"/>
+	                <label for="login" string="Username" />
+	                <field name="login" default_focus="1" placeholder="UserName" string="Username" />
+	        		<label for="new_password" />
+		            <field name="new_password" placeholder="Password" />
 		            <separator />
 				</xpath>
 				<xpath expr="/form/sheet/group" position="before">
 					<group>
 						<group>
-							<field name="user_type" on_change="onchange_get_position(user_type)" domain="[('category_id.name', 'ilike', 'Pamsimas')]" required="True"/>
-							<field name="position" on_change="onchange_get_office(position)" attrs="{'invisible': [('position','=', False)]}" />
-			                <field name="office" options="{'create': false, 'create_edit': false}" attrs="{'invisible': [('position','=', False)]}"/>
+							<field name="receiver_name" />
+							<field name="receiver_bank" />
+			                <field name="receiver_bank_no"/>
+			                <field name="thp"/>
 						</group>
 						<group>
-							<separator />
+							<field name="user_type" on_change="onchange_get_position(user_type)" domain="[('category_id.name', 'ilike', 'Pamsimas')]" required="True"/>
+							<field name="position" on_change="onchange_get_office(position)" attrs="{'invisible': [('position','=', False)]}" required="True"/>
+			                <field name="office" options="{'create': false, 'create_edit': false}" attrs="{'invisible': [('position','=', False)]}" required="True"/>
 						</group>
 					</group>
 				</xpath>
@@ -283,6 +286,8 @@
                 				<field name="name" invisible="1"/>
 	                			<field name="contract" on_change="update_detail(contract,subcontract)"/>
 		                    	<field name="subcontract" on_change="update_detail(contract,subcontract)"/>
+		                    	<field name="unit" />
+		                    	<field name="read_only" />
 	                    	</group>
 	                    	<group/>
                 		</group>
@@ -339,13 +344,14 @@
                     			<field name="date" />
                     			<field name="position" on_change="onchange_get_office(position)"/>
 			                    <field name="office" on_change="onchange_get_officer(office)" options="{'create': false, 'create_edit': false}" />
-			                    <field name="officer_name" required="True" domain="[('name', '=', '')]" options="{'create': false, 'create_edit': false}"/>
+			                    <field name="officer_name" on_change="onchange_get_officer_user(officer_name)" required="True" domain="[('name', '=', '')]" options="{'create': false, 'create_edit': false}"/>
+                    			<field name="thp" readonly="True"/>
                     		</group>
 	                    	<group>
 			                    <field name="receiver_bank" />
 			                    <field name="receiver_name" />
 			                    <field name="receiver_bank_no" />
-			                    <field name="transfer_amount" />
+			                    <field name="transfer_amount"/>
 	                    	</group>
                     	</group>
                     	<notebook attrs="{'invisible':[('state','==','draft')]}">
@@ -363,13 +369,15 @@
 		                        		<group>
 		                        			<field name="name" />
 		                            		<field name="quantity" on_change="update_total_value(quantity,contract_value)"/>
+		                            		<field name="unit" readonly="True"/>
 		                            		<field name="contract_value" on_change="update_total_value(quantity,contract_value)"/>
 		                            		<field name="received_contract_value" readonly="True"/>
 		                            	</group>
 		                            </form>
 		                            <tree string="Contract" editable="bottom">
-		                                <field name="name" />
+		                                <field name="name" on_change="update_contract_detail(name)"/>
 		                                <field name="quantity"/>
+		                                <field name="unit" readonly="True" />
 		                                <field name="contract_value"/>
 		                                <field name="received_contract_value" readonly="True"/>
 		                            </tree>
@@ -450,6 +458,7 @@
                     			<field name="date" readonly="True"/>
                     			<field name="position" readonly="True"/>
 			                    <field name="office" readonly="True"/>
+			                    <field name="thp" readonly="True"/>
                     		</group>
 	                    	<group>
 			                    <field name="receiver_bank" readonly="True"/>
@@ -472,13 +481,14 @@
 		                        		<group>
 		                        			<field name="name" options="{'create': false, 'create_edit': false}"/>
 		                            		<field name="quantity" on_change="update_total_value(quantity,contract_value)"/>
+		                            		<field name="unit" readonly="True" />
 		                            		<field name="received_contract_value" on_change="update_total_value(quantity,contract_value)"/>
-		                            		
-		                        		</group>
+		                            	</group>
 		                            </form>
 		                            <tree string="Contract" editable="bottom">
 		                                <field name="name" />
 		                                <field name="quantity"/>
+		                                <field name="unit" readonly="True" />
 		                                <field name="received_contract_value"/>
 		                            </tree>
 		                        </field>

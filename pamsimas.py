@@ -60,14 +60,15 @@ class res_users(osv.Model):
         return {'value':res, 'domain': {'office': domain}}
     
     
-    
-    
     _columns = {
-        'user_type'         : fields.many2one('res.groups', 'Group'),
-        #'user_type'     : fields.selection((('pmu', 'PMU'), ('firm','Firm'), ('regional','Regional')),'User Type', required = True),
+        'user_type'     : fields.many2one('res.groups', 'Group'),
+        #'user_type'    : fields.selection((('pmu', 'PMU'), ('firm','Firm'), ('regional','Regional')),'User Type', required = True),
         'position'      : fields.selection((('roms', 'Roms'), ('province','Province'), ('city','City/Kabupaten')),'Position'),
         'office'        : fields.many2one('pamsimas.regional', 'Office'),
-        
+        'receiver_bank' : fields.char('Bank Name'),
+        'receiver_bank_no': fields.char('Bank Acc Number'),
+        'receiver_name' : fields.char('FullName'),
+        'thp'           : fields.float('Minimum THP', digits=(0,0)),
     }
     
 
@@ -159,6 +160,7 @@ class Regional(osv.osv):
     }
     
 class Transfer(osv.osv):
+    
     def update_state(self, cr, uid, ids, context=None):
         res ={} 
         res['state'] = 'confirmed'
@@ -181,7 +183,7 @@ class Transfer(osv.osv):
         
         
         username = self.pool.get('res.users').browse(cr,uid,uid).name
-        print "#####"+username    
+        #print "#####"+username    
             
         if position == "roms":
             domain = [('roms','=',username),('province','=',False),('city','=',False)]
@@ -215,7 +217,25 @@ class Transfer(osv.osv):
         #    res['office'] = o.roms.name
             
         #return {'value': res}
-        return {'value':res, 'domain': {'officer_name': domain}} 
+        return {'value':res, 'domain': {'officer_name': domain}}
+    
+    def onchange_get_officer_user(self, cr, uid, ids, user_input_id, context=None):
+        
+        if user_input_id == False:
+            return {}
+        
+        obj = self.pool.get('res.users')
+        user_id = obj.browse(cr, uid, [user_input_id], context=context)
+        
+        res = {}
+        for p in user_id:
+            res['receiver_bank']=p.receiver_bank
+            res['receiver_name']=p.receiver_name
+            res['receiver_bank_no']=p.receiver_bank_no
+            res['thp']=p.thp
+
+
+        return {'value':res}  
     
     def print_report(self, cr, uid, ids, context=None):
         datas = {
@@ -238,8 +258,8 @@ class Transfer(osv.osv):
         
         
         test = self.pool.get('res.users').browse(cr, uid, uid, context=context).office.detail
-        print test
-        print office_obj.office.detail
+        #print test
+        #print office_obj.office.detail
         
         for line in self.browse(cr, uid, ids, context):
                 res[line.id] = office_obj.office.detail
@@ -261,21 +281,23 @@ class Transfer(osv.osv):
         'position'      : fields.selection((('roms', 'Roms'), ('province','Province'), ('city','City/Kabupaten')),'Position'),
         'office'        : fields.many2one('pamsimas.regional', 'Office'),
         'officer_name'  : fields.many2one('res.users', 'Officer Name'),
+        'thp'           : fields.float('Minimum THP', digits=(0,0)),
         
         'receiver_bank' : fields.char('Receiver Bank'),
-        'receiver_bank_no': fields.char('Receiver Account Number'),
-        'receiver_name' : fields.char('Receiver Name'),
-        'transfer_amount' : fields.float('Transfer Amount', digits=(4,2)),
+        'receiver_bank_no'  : fields.char('Receiver Account Number'),
+        'receiver_name'     : fields.char('Receiver Name'),
+        'transfer_amount'   : fields.float('Transfer Amount', digits=(0,0)),
         
-        'transfer_received_date' : fields.date('Transfer Received Date'),
-        'transfer_received' : fields.float('Transfer Amount', digits=(4,2)),
+        'transfer_received_date'    : fields.date('Transfer Received Date'),
+        'transfer_received' : fields.float('Received Amount', digits=(0,0)),
+        'transfer_received_total'   : fields.float('Total Received Transfer', digits=(0,0)),
         
         'transfer_contract_ids'  : fields.one2many('pamsimas.contract','contract_id','Transfer Contract', ondelete='cascade'),
         
         'description'   : fields.text('Description'),
-        'sender_id'        : fields.char('Sender', invisible=True),
+        'sender_id'     : fields.char('Sender', invisible=True),
         
-        'temp_office' : fields.function(_get_office, string="temp office", type='char')
+        'temp_office'   : fields.function(_get_office, string="temp office", type='char')
     }
     
     _defaults = {
@@ -285,8 +307,24 @@ class Transfer(osv.osv):
     
     def transfer_confirm(self, cr, uid, ids, context=None):
         # set to "confirmed" state
-        print "WOOOOOOOO"
-        return self.write(cr, uid, ids, {'state': 'confirmed'}, context=context)
+        
+        total_transfer_received = 0
+        total_contract_received = 0
+        
+        for line1 in self.browse(cr, uid, ids, context):
+            #print line1.transfer_received
+            total_transfer_received = line1.transfer_received
+            
+            for line2 in line1.transfer_contract_ids:
+                #print line2.received_contract_value
+                total_contract_received += line2.received_contract_value
+
+        if(total_transfer_received != total_contract_received):
+            res = {}
+            #return {'warning':{'title':'warning','message':'Negative margin on this line'}}
+            raise osv.except_osv(("Warning"),("Adanya perbedaan jumlah antara Total Received Amount Confirmation dan Total Received Amount pada Contract"))
+        else:
+            return self.write(cr, uid, ids, {'state': 'confirmed'}, context=context)
  
 
 class Contract(osv.osv):
@@ -298,15 +336,30 @@ class Contract(osv.osv):
         res['contract_value_total']=total
         return {'value': res}
     
+    def update_contract_detail(self, cr, uid, ids, in_name, context=None):
+        
+        
+        contract_obj = self.pool.get("pamsimas.contractitem")
+        contracts = contract_obj.browse(cr, uid, [in_name], context=context)
+        res = {}
+        for p in contracts:
+            #print "====================",p.unit
+            res['unit']=p.unit
+            #if (p.name == 'Remunerasi'): 
+            #    print "masuuuk"
+        
+        return {'value':res}
+    
     _name           = 'pamsimas.contract'
     _description    = 'Transaction Type'
     _columns         = {
         'name'          : fields.many2one('pamsimas.contractitem', 'Contract Type', ondelete='cascade'),
         'activity'      : fields.selection((('0',''),('1', 'Spot Checking Province to Disctict'), ('2', 'Spot Checking District to Village')), 'Activity'),
         'quantity'      : fields.integer('Quantity'),
-        'contract_value': fields.float('Contract Value'),
-        'received_contract_value' : fields.float('Received Value'),
-        'contract_value_total': fields.float('Total Value'),
+        'unit'          : fields.char('Unit'),
+        'contract_value': fields.float('Contract Value', digits=(0,0)),
+        'received_contract_value' : fields.float('Received Amount', digits=(0,0)),
+        'contract_value_total': fields.float('Total Value', digits=(0,0)),
         'description'   : fields.text('Description'),
         'contract_id'  : fields.many2one('pamsimas.transfer', 'Contract', ondelete='cascade'),
         #'contract_id'  : fields.many2one('pamsimas.transferconfirmation', 'Contract'),
@@ -333,6 +386,8 @@ class ContractItem(osv.osv):
         'name'          : fields.char('Contract Name'),
         'contract'      : fields.char('Contract Type'),
         'subcontract'   : fields.char('Sub-Contract'),
+        'unit'          : fields.char('Unit'),
+        'read_only'     : fields.boolean('Read Only'),
         'description'   : fields.text('Description'),
         
     }
