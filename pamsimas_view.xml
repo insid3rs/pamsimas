@@ -39,8 +39,8 @@
 						</group>
 						<group>
 							<field name="user_type" on_change="onchange_get_position(user_type)" domain="[('category_id.name', 'ilike', 'Pamsimas')]" required="True"/>
-							<field name="position" on_change="onchange_get_office(position)" attrs="{'invisible': [('position','=', False)]}" required="True"/>
-			                <field name="office" options="{'create': false, 'create_edit': false}" attrs="{'invisible': [('position','=', False)]}" required="True"/>
+							<field name="position" on_change="onchange_get_office(position)" attrs="{'invisible': [('position','=', False)]}" />
+			                <field name="office" options="{'create': false, 'create_edit': false}" attrs="{'invisible': [('position','=', False)]}" />
 						</group>
 					</group>
 				</xpath>
@@ -542,7 +542,7 @@
         
         <menuitem id="pamsimas_menu_transaction_menu_transferconfirmation" name="Transfer Confirmation" parent="pamsimas_menu_transaction_menu" action="transferconfirmation_list_action" groups="group_regional,group_pmu"/>
 		
-		<menuitem id="pamsimas_menu_report_menu_regional" name="Report Regional" parent="pamsimas_menu_report_menu" action="user_list_action"/>
+		<menuitem id="pamsimas_menu_report_menu_regional" name="Report Regional" parent="pamsimas_menu_report_menu" action="action_pamsimas_regional_report"/>
 		<menuitem id="pamsimas_menu_report_menu_firm" name="Report Firm" parent="pamsimas_menu_report_menu" action="user_list_action"/>
 		<menuitem id="pamsimas_menu_report_menu_pmu" name="Report PMU" parent="pamsimas_menu_report_menu" action="user_list_action"/>
 		

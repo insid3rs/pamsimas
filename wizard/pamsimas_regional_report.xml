@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+     <data>
+     
+     
+     
+     <record id="pamsimas_regional_report_view" model="ir.ui.view">
+            <field name="name">Pamsimas Regional Report</field>
+            <field name="model">pamsimas.regional.report</field>
+            <field name="arch" type="xml">
+                <form string="Transfer Confirmation Form" version="7.0" >
+                	<sheet>
+                		<group>
+                			<field name="receiver_name"/>
+                		</group>
+                	</sheet>
+                <footer>
+                    <button name="print_report" type="object" string="print report" icon="gtk-print" />
+                	or 
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+                </form>
+            </field>
+        </record>
+     
+     <record id="action_pamsimas_regional_report" model="ir.actions.act_window">
+             <field name="name">Pamsimas Regional Reports</field>
+             <field name="res_model">pamsimas.transfer</field>
+             <field name="type">ir.actions.act_window</field>
+             <field name="view_type">form</field>
+             <field name="view_mode">form</field>
+             <field name="view_id" ref="pamsimas_regional_report_view"/>
+             <field name="target">new</field>
+        </record>
+        
+    	
+     
+    </data>
+</openerp>

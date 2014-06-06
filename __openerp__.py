@@ -12,6 +12,7 @@
                    'security/ir.model.access.csv',
                    'pamsimas_workflow.xml',
                    'wizard/pamsimas_transfer_confirmation.xml',
+                   'wizard/pamsimas_regional_report.xml',
                    'pamsimas_view.xml'],
     "css" : [
         'static/src/css/modified_theme.css',
