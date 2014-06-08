@@ -289,7 +289,7 @@ class Transfer(osv.osv):
         'transfer_amount'   : fields.float('Transfer Amount', digits=(0,0)),
         
         'transfer_received_date'    : fields.date('Transfer Received Date'),
-        'transfer_received' : fields.float('Received Amount', digits=(0,0)),
+        'transfer_received' : fields.float('Received Amount Total', digits=(0,0)),
         'transfer_received_total'   : fields.float('Total Received Transfer', digits=(0,0)),
         
         'transfer_contract_ids'  : fields.one2many('pamsimas.contract','contract_id','Transfer Contract', ondelete='cascade'),
@@ -357,7 +357,7 @@ class Contract(osv.osv):
         'activity'      : fields.selection((('0',''),('1', 'Spot Checking Province to Disctict'), ('2', 'Spot Checking District to Village')), 'Activity'),
         'quantity'      : fields.integer('Quantity'),
         'unit'          : fields.char('Unit'),
-        'contract_value': fields.float('Contract Value', digits=(0,0)),
+        'contract_value': fields.float('Transfer Amount', digits=(0,0)),
         'received_contract_value' : fields.float('Received Amount', digits=(0,0)),
         'contract_value_total': fields.float('Total Value', digits=(0,0)),
         'description'   : fields.text('Description'),
