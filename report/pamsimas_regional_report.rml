@@ -64,6 +64,17 @@
       <lineStyle kind="LINEABOVE" colorName="#000000" start="6,0" stop="6,0"/>
       <lineStyle kind="LINEBELOW" colorName="#000000" start="6,-1" stop="6,-1"/>
     </blockTableStyle>
+    <blockTableStyle id="Table3">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+      <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,0" stop="0,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="0,0" stop="0,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="0,-1" stop="0,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#000000" start="1,0" stop="1,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#000000" start="1,0" stop="1,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="1,0" stop="1,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="1,-1" stop="1,-1"/>
+    </blockTableStyle>
     <initialize>
       <paraStyle name="all" alignment="justify"/>
     </initialize>
@@ -75,7 +86,9 @@
     <paraStyle name="P6" fontName="Helvetica" fontSize="9.0" leading="11"/>
     <paraStyle name="P7" fontName="Helvetica" fontSize="9.0" leading="11" alignment="CENTER"/>
     <paraStyle name="P8" fontName="Helvetica" fontSize="9.0" leading="11" alignment="CENTER"/>
-    <paraStyle name="P9" fontName="Helvetica" fontSize="12.0" leading="15" alignment="CENTER" spaceBefore="0.0" spaceAfter="6.0"/>
+    <paraStyle name="P9" fontName="Helvetica-Bold" fontSize="9.0" leading="11" alignment="CENTER"/>
+    <paraStyle name="P10" fontName="Helvetica-Bold" fontSize="9.0" leading="11" alignment="RIGHT" textColor="#000000"/>
+    <paraStyle name="P11" fontName="Helvetica-Bold" fontSize="12.0" leading="15" alignment="CENTER" spaceBefore="0.0" spaceAfter="6.0"/>
     <paraStyle name="Standard" fontName="Helvetica"/>
     <paraStyle name="Heading" fontName="Helvetica" fontSize="14.0" leading="17" spaceBefore="12.0" spaceAfter="6.0"/>
     <paraStyle name="Text_20_body" fontName="Helvetica" spaceBefore="0.0" spaceAfter="6.0"/>
@@ -90,45 +103,41 @@
     <para style="P1">
       <font color="white"> </font>
     </para>
-    <para style="P1">
-      <font color="white"> </font>
-    </para>
-    <para style="P9">Laporan Rekapitulasi Konfirmasi Transfer</para>
-    <para style="P2">
-      <font color="white"> </font>
-    </para>
+    <para style="P11">Laporan Rekapitulasi Konfirmasi Transfer</para>
+    <para style="P7">Periode</para>
+    <para style="P7">[[ data['form']['periode_start'] ]] - [[ data['form']['periode_stop'] ]]</para>
+    <para style="P7"> </para>
+    <para style="P7"> </para>
     <blockTable colWidths="60.0,73.0,39.0,61.0,68.0,139.0,79.0" style="Table1">
       <tr>
         <td>
-          <para style="P3">Tanggal</para>
+          <para style="P9">Tanggal</para>
         </td>
         <td>
-          <para style="P3">No Bukti Transfer</para>
+          <para style="P9">No Bukti Transfer</para>
         </td>
         <td>
-          <para style="P3">Bank</para>
+          <para style="P9">Bank</para>
         </td>
         <td>
-          <para style="P3">No Account</para>
+          <para style="P9">No Account</para>
         </td>
         <td>
-          <para style="P3">Nama Penerima</para>
+          <para style="P9">Nama Penerima</para>
         </td>
         <td>
-          <para style="P3">Detail Transfer</para>
+          <para style="P9">Detail Transfer</para>
         </td>
         <td>
-          <para style="P3">Jumlah Diterima</para>
+          <para style="P9">Jumlah Diterima</para>
         </td>
       </tr>
     </blockTable>
     <para style="P5">
       <font color="white"> </font>
     </para>
-    <para style="P4">
-    </para>
     <blockTable colWidths="60.0,73.0,39.0,61.0,68.0,139.0,79.0" style="Table2">
-      <tr>[[ repeatIn(get_transfer(data['form']['transfer']),'o') ]]
+      <tr>[[ repeatIn(get_transfer(data['form']),'o') ]]
         <td>
           <para style="P4">
             [[ o['date'] ]]
@@ -156,12 +165,27 @@
         </td>
         <td>
           <para style="P3">
-            <font color="white"> </font>
+            "Firm Transfer"
           </para>
         </td>
         <td>
           <para style="P4">
-            [[ o['transfer_received_total'] ]]
+            [[ o['transfer_received'] or '0']]
+          </para>
+        </td>
+      </tr>
+    </blockTable>
+    <para style="Standard">
+      <font color="white"> </font>
+    </para>
+    <blockTable colWidths="439.0,79.0" style="Table3">
+      <tr>
+        <td>
+          <para style="P10">Total </para>
+        </td>
+        <td>
+          <para style="P4">
+            [[ get_total_transfer(data['form']['transfer']) or '0']]
           </para>
         </td>
       </tr>

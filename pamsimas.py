@@ -346,7 +346,7 @@ class Contract(osv.osv):
             #print "====================",p.unit
             res['unit']=p.unit
             #if (p.name == 'Remunerasi'): 
-            #    print "masuuuk"
+            #    print "remunerasiiii"
         
         return {'value':res}
     

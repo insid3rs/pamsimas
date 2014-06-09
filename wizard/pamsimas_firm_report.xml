@@ -2,9 +2,9 @@
 <openerp>
      <data>
      
-     <record id="pamsimas_regional_report_view" model="ir.ui.view">
-            <field name="name">Pamsimas Regional Report</field>
-            <field name="model">pamsimas.regional.report</field>
+     <record id="pamsimas_firm_report_view" model="ir.ui.view">
+            <field name="name">Pamsimas Firm Report</field>
+            <field name="model">pamsimas.firm.report</field>
             <field name="arch" type="xml">
                 <form string="Transfer Confirmation Form" version="7.0" >
                 	<sheet>
@@ -14,6 +14,16 @@
 	                			<field name="periode_start"/>
 	                			<field name="periode_stop"/>
 	                		</group>
+	                		<group>
+	                			<separator />
+	                		</group>
+                		</group>
+                		<group>
+                			<group>
+	                			<field name="position" on_change="onchange_get_office(position)"/>
+			                    <field name="office" on_change="onchange_get_officer(office)" options="{'create': false, 'create_edit': false}" />
+			                    <field name="officer_name" on_change="onchange_get_officer_user(officer_name)" domain="[('name', '=', '')]" options="{'create': false, 'create_edit': false}"/>
+                    		</group>
 	                		<group>
 	                			<separator />
 	                		</group>
@@ -28,13 +38,13 @@
             </field>
         </record>
      
-     <record id="action_pamsimas_regional_report" model="ir.actions.act_window">
-     	<field name="name">Pamsimas Regional Reports</field>
-        <field name="res_model">pamsimas.regional.report</field>
+     <record id="action_pamsimas_firm_report" model="ir.actions.act_window">
+     	<field name="name">Pamsimas Firm Reports</field>
+        <field name="res_model">pamsimas.firm.report</field>
         <field name="type">ir.actions.act_window</field>
         <field name="view_type">form</field>
         <field name="view_mode">form</field>
-        <field name="view_id" ref="pamsimas_regional_report_view"/>
+        <field name="view_id" ref="pamsimas_firm_report_view"/>
         <field name="target">new</field>
     </record>
         

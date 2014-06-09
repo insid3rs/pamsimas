@@ -345,13 +345,13 @@
                     			<field name="position" on_change="onchange_get_office(position)"/>
 			                    <field name="office" on_change="onchange_get_officer(office)" options="{'create': false, 'create_edit': false}" />
 			                    <field name="officer_name" on_change="onchange_get_officer_user(officer_name)" required="True" domain="[('name', '=', '')]" options="{'create': false, 'create_edit': false}"/>
-                    			<field name="thp" readonly="True"/>
+                    			
                     		</group>
 	                    	<group>
 			                    <field name="receiver_bank" />
 			                    <field name="receiver_name" />
 			                    <field name="receiver_bank_no" />
-			                    <field name="transfer_amount"/>
+			                    <field name="transfer_amount" />
 	                    	</group>
                     	</group>
                     	<notebook attrs="{'invisible':[('state','==','draft')]}">
@@ -377,7 +377,7 @@
 		                            <tree string="Contract" editable="bottom">
 		                                <field name="name" on_change="update_contract_detail(name)"/>
 		                                <field name="quantity"/>
-		                                <field name="unit" readonly="True" />
+		                                <field name="unit" />
 		                                <field name="contract_value"/>
 		                                <field name="received_contract_value" readonly="True"/>
 		                            </tree>
@@ -458,12 +458,12 @@
                     			<field name="date" readonly="True"/>
                     			<field name="position" readonly="True"/>
 			                    <field name="office" readonly="True"/>
-			                    <field name="thp" readonly="True"/>
                     		</group>
 	                    	<group>
 			                    <field name="receiver_bank" readonly="True"/>
 			                    <field name="receiver_name" readonly="True"/>
 			                    <field name="receiver_bank_no" readonly="True"/>
+			                    <field name="thp" readonly="True"/>
 	                    	</group>
                     	</group>
                     	<notebook>
@@ -488,7 +488,7 @@
 		                            <tree string="Contract" editable="bottom">
 		                                <field name="name" />
 		                                <field name="quantity"/>
-		                                <field name="unit" readonly="True" />
+		                                <field name="unit" />
 		                                <field name="received_contract_value"/>
 		                            </tree>
 		                        </field>
@@ -542,9 +542,9 @@
         
         <menuitem id="pamsimas_menu_transaction_menu_transferconfirmation" name="Transfer Confirmation" parent="pamsimas_menu_transaction_menu" action="transferconfirmation_list_action" groups="group_regional,group_pmu"/>
 		
-		<menuitem id="pamsimas_menu_report_menu_regional" name="Report Regional" parent="pamsimas_menu_report_menu" action="action_pamsimas_regional_report"/>
-		<menuitem id="pamsimas_menu_report_menu_firm" name="Report Firm" parent="pamsimas_menu_report_menu" action="user_list_action"/>
-		<menuitem id="pamsimas_menu_report_menu_pmu" name="Report PMU" parent="pamsimas_menu_report_menu" action="user_list_action"/>
+		<menuitem id="pamsimas_menu_report_menu_regional" name="Report Regional" parent="pamsimas_menu_report_menu" action="action_pamsimas_regional_report" groups="group_regional"/>
+		<menuitem id="pamsimas_menu_report_menu_firm" name="Report Firm" parent="pamsimas_menu_report_menu"  action="action_pamsimas_firm_report" groups="group_firm"/>
+		<menuitem id="pamsimas_menu_report_menu_pmu" name="Report PMU" parent="pamsimas_menu_report_menu" action="user_list_action" groups="group_pmu"/>
 		
 		
     </data>

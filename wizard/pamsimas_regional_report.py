@@ -8,14 +8,14 @@ class pamsimas_regional_report(osv.osv_memory):
     _columns = {
         'name'          : fields.char('Name'),
         'transfer'      : fields.many2one('pamsimas.transfer', 'Transfer List'),
-        'status'        : fields.selection((('confirmed', 'Confirmed'), ('notconfirmed','Not Confirmed')),'Status'),        
-        'periode_start' : fields.selection([('1', 'January'), ('2', 'February'), ('3', 'March'), ('4', 'April'),
-                                           ('5', 'May'), ('6', 'June'), ('7', 'July'), ('8', 'August'), ('9', 'September'),
-                                           ('10', 'October'), ('11', 'November'), ('12', 'December')], 'Periode Start'),
-        'periode_stop'  : fields.selection([('1', 'January'), ('2', 'February'), ('3', 'March'), ('4', 'April'),
-                                           ('5', 'May'), ('6', 'June'), ('7', 'July'), ('8', 'August'), ('9', 'September'),
-                                           ('10', 'October'), ('11', 'November'), ('12', 'December')], 'Periode Stop'),
-
+        'status'        : fields.selection((('confirmed', 'Confirmed'), ('draft','Not Confirmed')),'Status'),        
+        'periode_start' : fields.date('Periode Start'),
+        'periode_stop'  : fields.date('Periode Stop'),
+        'total_transfer': fields.float('Total', digits=(0,0)),
+    }
+    
+    _defaults = {
+        'total_transfer' : 0,
     }
 
     def print_report(self, cr, uid, ids, context=None):
@@ -28,13 +28,13 @@ class pamsimas_regional_report(osv.osv_memory):
             
         datas = {'ids': context.get('active_ids', []),
                  'model' : 'pamsimas.transfer'}
-        res = self.read(cr, uid, ids, ['name','transfer','status','periode_start','periode_stop'], context=context)
+        res = self.read(cr, uid, ids, ['name','transfer','status','periode_start','periode_stop','total_transfer'], context=context)
         res = res and res[0] or {}
         res['transfer'] = res['transfer']
         datas['form'] = res
         return {
             'type': 'ir.actions.report.xml',
-            'report_name': 'pamsimas.report_transfer',
+            'report_name': 'pamsimas.regional_report_transfer',
             'datas': datas,
        }
         

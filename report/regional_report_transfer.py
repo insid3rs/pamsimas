@@ -9,10 +9,10 @@ from openerp.tools.translate import _
 from report_webkit import webkit_report
 
 
-class report_transfer(report_sxw.rml_parse):
+class regional_report_transfer(report_sxw.rml_parse):
     
     def __init__(self, cr, uid, name, context=None):
-        super(report_transfer, self).__init__(cr, uid, name, context=context)
+        super(regional_report_transfer, self).__init__(cr, uid, name, context=context)
         self.transfer=False
         self.localcontext.update({'time'        : time, 
                                   'get_object':self._get_object,
@@ -51,14 +51,14 @@ class report_transfer(report_sxw.rml_parse):
         
         total_received = 0
         
-        #for i in transfer:
-        #    print i.transfer_received
-        #    total_received += i.transfer_received
+        for i in transfer:
+            print i.transfer_received
+            total_received += i.transfer_received
         
         return total_received
         
 
-report_sxw.report_sxw('report.pamsimas.report_transfer', 
+report_sxw.report_sxw('report.pamsimas.regional_report_transfer', 
                       'pamsimas.transfer', 
                       'addons/pamsimas/report/pamsimas_regional_report.rml', 
-                      parser=report_transfer)
+                      parser=regional_report_transfer)

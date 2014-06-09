@@ -1,2 +1,3 @@
 import pamsimas_transfer_confirmation
 import pamsimas_regional_report
+import pamsimas_firm_report
