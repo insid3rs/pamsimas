@@ -2,10 +2,14 @@
 <openerp>
     <data>
 
-        <menuitem id="pamsimas_menu" name="Master Data" groups="group_pmu,group_firm"/>
+        <menuitem id="pamsimas_menu" name="Master Data" groups="group_pmu"/>
         <menuitem id="pamsimas_menu_regional" name="Regional" parent="pamsimas_menu" groups="group_pmu"/>
         <menuitem id="pamsimas_menu_contract" name="Contract" parent="pamsimas_menu" groups="group_pmu"/>
-        <menuitem id="pamsimas_menu_user" name="User" parent="pamsimas_menu" groups="group_pmu,group_firm"/>
+        <menuitem id="pamsimas_menu_user" name="User" parent="pamsimas_menu" groups="group_pmu"/>
+        
+        <menuitem id="pamsimas_menu_user_firm" name="Users" groups="group_firm" sequence="1"/>
+        <menuitem id="pamsimas_menu_user_user_firm" name="User" parent="pamsimas_menu_user_firm" groups="group_firm"/>
+        <menuitem id="pamsimas_menu_user_user_user_firm" name="User" parent="pamsimas_menu_user_user_firm" action="user_list_action" />
         
         <menuitem id="pamsimas_menu_transaction" name="Transaction" />
 		<menuitem id="pamsimas_menu_transaction_menu" name="Transaction" parent="pamsimas_menu_transaction" />
@@ -73,7 +77,7 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem id="pamsimas_menu_user_firm" name="User" parent="pamsimas_menu_user" action="user_list_action" />
+        <menuitem id="pamsimas_menu_users" name="User" parent="pamsimas_menu_user" action="user_list_action" />
 
         
 		<!-- =========================ROMS============================= -->
@@ -345,7 +349,6 @@
                     			<field name="position" on_change="onchange_get_office(position)"/>
 			                    <field name="office" on_change="onchange_get_officer(office)" options="{'create': false, 'create_edit': false}" />
 			                    <field name="officer_name" on_change="onchange_get_officer_user(officer_name)" required="True" domain="[('name', '=', '')]" options="{'create': false, 'create_edit': false}"/>
-                    			
                     		</group>
 	                    	<group>
 			                    <field name="receiver_bank" />
@@ -441,7 +444,6 @@
                 <form string="Transfer Confirmation Form" version="7.0" create="false">
                 	<header>
                 		<field name="state" widget="statusbar" statusbar_visible="draft, confirmed" statusbar_colors='{"draft":"red", "confirmed":"blue"}'/>
-                		<button name="print_report" type="object" string="print report" icon="gtk-print" />
                 		<button name="transfer_confirm" string="Confirm Transaction" type="object" class="oe_highlight" attrs="{'invisible':[('transfer_received','=',0)]}" />
                 		<button name="confirm" states="comment" string="Confirm Transaction" type="workflow" class="oe_highlight"/>
                 	</header>
