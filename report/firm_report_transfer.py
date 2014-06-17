@@ -55,9 +55,28 @@ class firm_report_transfer(report_sxw.rml_parse):
          
         return transfer
     
-    def _get_total_transfer(self,form):
+    def _get_total_transfer(self, form):
         obj = self.pool.get('pamsimas.transfer')
-        transfer_id = obj.search(self.cr, self.uid, [], context=self.localcontext)
+        
+        print form['status']
+        print form['officer_name']
+        
+        if ((form['status'] != False) & (form['officer_name'] != False)): 
+            if (form['status'] == 'confirmed'):
+                transfer_id = obj.search(self.cr, self.uid, ['&',('state', '=', 'confirmed'),('officer_name', '=', form['officer_name'][0])], context=self.localcontext)
+            if (form['status'] == 'draft'):
+                transfer_id = obj.search(self.cr, self.uid, ['&',('state', '=', 'draft'),('officer_name', '=', form['officer_name'][0])], context=self.localcontext)
+        if ((form['status'] != False) & (form['officer_name'] == False)):
+            print "masuk"
+            if (form['status'] == 'confirmed'):
+                transfer_id = obj.search(self.cr, self.uid, [('state', '=', 'confirmed')], context=self.localcontext)
+            if (form['status'] == 'draft'):
+                transfer_id = obj.search(self.cr, self.uid, [('state', '=', 'draft')], context=self.localcontext)
+        if ((form['status'] == False) & (form['officer_name'] != False)):
+            transfer_id = obj.search(self.cr, self.uid, [('officer_name', '=', form['officer_name'][0])], context=self.localcontext)
+        if ((form['status'] == False) & (form['officer_name'] == False)):
+            transfer_id = obj.search(self.cr, self.uid, [], context=self.localcontext)
+                
         transfer = obj.browse(self.cr, self.uid, transfer_id, context=self.localcontext)
         
         total_received = 0

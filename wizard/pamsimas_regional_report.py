@@ -31,6 +31,7 @@ class pamsimas_regional_report(osv.osv_memory):
         res = self.read(cr, uid, ids, ['name','transfer','status','periode_start','periode_stop','total_transfer'], context=context)
         res = res and res[0] or {}
         res['transfer'] = res['transfer']
+        res['total_transfer'] = res['total_transfer']
         datas['form'] = res
         return {
             'type': 'ir.actions.report.xml',

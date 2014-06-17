@@ -299,7 +299,7 @@
         </td>
         <td>
           <para style="P1">
-             [[ get_total_transfer(data['form']['transfer']) or '0']]
+             [[ get_total_transfer(data['form']) or '0']]
           </para>
         </td>
         <td>
