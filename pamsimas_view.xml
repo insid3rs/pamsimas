@@ -397,7 +397,7 @@
             <field name="model">pamsimas.transfer</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Transfer Tree">
+                <tree string="Transfer Tree" colors="blue:state=='draft'">
                 	<field name="state" />
                 	<field name="name" />
                     <field name="date" />
@@ -507,7 +507,7 @@
             <field name="model">pamsimas.transfer</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Transfer Confirmation Tree">
+                <tree string="Transfer Confirmation Tree" colors="blue:state=='draft'">
                     <field name="state" />
                 	<field name="name" />
                     <field name="transfer_received_date" />

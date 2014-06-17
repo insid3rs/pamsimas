@@ -303,6 +303,7 @@ class Transfer(osv.osv):
     _defaults = {
         'state': 'draft',
         'sender_id':  lambda self, cr, uid, context: context.get('uid', False),
+        'transfer_amount' : ''
     }
     
     def transfer_confirm(self, cr, uid, ids, context=None):
