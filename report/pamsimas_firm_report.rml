@@ -149,9 +149,9 @@
       <font color="white"> </font>
     </para>
     <para style="P6">Laporan Rekapitulasi Bukti Transfer</para>
-    <para style="P6">[[ data['form']['officer_name'][1] ]]</para>
+    <para style="P6">[[ user.name or '']]</para>
     <para style="P6">Periode</para>
-    <para style="P6">[[ data['form']['periode_start'] ]] - [[ data['form']['periode_stop'] ]]</para>
+    <para style="P6">[[ data['form']['periode_start'] or '']] - [[ data['form']['periode_stop'] or '']]</para>
     <para style="P5">
       <font color="white"> </font>
     </para>
@@ -196,40 +196,39 @@
       <font color="white"> </font>
     </para>
     <blockTable colWidths="27.0,80.0,53.0,81.0,89.0,58.0,80.0,91.0,67.0,64.0,63.0" style="Table2">
-      <tr>[[ repeatIn(get_transfer(data['form']),'o') ]]
+      <tr>[[ repeatIn(get_transfer(data['form']),'o')]]
         <td>
           <para style="P3">
-            [no]
           </para>
         </td>
         <td>
           <para style="P3">
-            [[ o['name'] ]]
+            [[ o.name or '']]
           </para>
         </td>
         <td>
           <para style="P3">
-            [[ o['date'] ]]
+            [[ o.date or '' ]]
           </para>
         </td>
         <td>
           <para style="P3">
-            [[ o['receiver_name'] ]]
+            [[ o.receiver_name or '' ]]
           </para>
         </td>
         <td>
           <para style="P3">
-            [[ o['officer_name']['name'] ]]
+            [[ o.officer_name.name or '' ]]
           </para>
         </td>
         <td>
           <para style="P3">
-            [[ o['receiver_bank'] ]]
+            [[ o.receiver_bank or '' ]]
           </para>
         </td>
         <td>
           <para style="P3">
-            [[ o['receiver_bank_no'] ]]
+            [[ o.receiver_bank_no or '' ]]
           </para>
         </td>
         <td>
@@ -239,17 +238,17 @@
         </td>
         <td>
           <para style="P3">
-            [[ o['transfer_amount'] or '0']]
+            [[ o.transfer_amount or '0']]
           </para>
         </td>
         <td>
           <para style="P3">
-            [[ o['transfer_received'] or '0']]
+            [[ o.transfer_received or '0']]
           </para>
         </td>
         <td>
           <para style="P3">
-            [[ o['transfer_amount']-o['transfer_received'] or '0' ]]
+            [[ o.transfer_amount-o.transfer_received or '0' ]]
           </para>
         </td>
       </tr>

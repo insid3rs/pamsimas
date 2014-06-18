@@ -62,7 +62,7 @@ class res_users(osv.Model):
     
     _columns = {
         'user_type'     : fields.many2one('res.groups', 'Group'),
-        #'user_type'    : fields.selection((('pmu', 'PMU'), ('firm','Firm'), ('regional','Regional')),'User Type', required = True),
+        'roms'          : fields.many2one('pamsimas.roms', 'Roms'),
         'position'      : fields.selection((('roms', 'Roms'), ('province','Province'), ('city','City/Kabupaten')),'Position'),
         'office'        : fields.many2one('pamsimas.regional', 'Office'),
         'receiver_bank' : fields.char('Bank Name'),

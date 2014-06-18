@@ -42,6 +42,7 @@
 			                <field name="thp"/>
 						</group>
 						<group>
+							<field name="roms"/>
 							<field name="user_type" on_change="onchange_get_position(user_type)" domain="[('category_id.name', 'ilike', 'Pamsimas')]" required="True"/>
 							<field name="position" on_change="onchange_get_office(position)" attrs="{'invisible': [('position','=', False)]}" />
 			                <field name="office" options="{'create': false, 'create_edit': false}" attrs="{'invisible': [('position','=', False)]}" />
@@ -64,6 +65,7 @@
             	<xpath expr="/tree/field[@name='name']" position="before">
             		<field name="user_type" />
             		<field name="office" />
+            		<field name="roms" />
 				</xpath>
             	<xpath expr="/tree/field[@name='lang']" position="replace">
 				</xpath>

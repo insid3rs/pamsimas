@@ -24,8 +24,8 @@
         <field name="implied_ids" eval="[(4, ref('group_regional')),(4, ref('group_firm'))]"/>
     </record>
     
-	<record id="transfer_firm_regional" model="ir.rule">
-        <field name="name">Transfer firm regional</field>
+	<record id="transfer_regional_rule" model="ir.rule">
+        <field name="name">Transfer regional rule</field>
         <field name="model_id" ref="model_pamsimas_transfer"/>
 		<field name="domain_force">[('officer_name.id','=',user.id)]</field>
         <field name="groups" eval="[(4,ref('group_regional'))]"/>
@@ -38,11 +38,12 @@
     <record id="transfer_firm_rule" model="ir.rule">
         <field name="name">Transfer firm rule</field>
         <field name="model_id" ref="model_pamsimas_transfer"/>
+        <field name="domain_force">[('officer_name.roms','=',user.roms.id)]</field>
         <field name="groups" eval="[(4,ref('group_firm'))]"/>
-        <field eval="0" name="perm_unlink"/>
+        <field eval="1" name="perm_unlink"/>
         <field eval="1" name="perm_write"/>
         <field eval="1" name="perm_read"/>
-        <field eval="0" name="perm_create"/>
+        <field eval="1" name="perm_create"/>
     </record>
     
     <record id="transfer_pmu_rule" model="ir.rule">
@@ -56,7 +57,27 @@
         <field eval="1" name="perm_create"/>
     </record>
     
+    <record id="user_firm_rule" model="ir.rule">
+        <field name="name">User firm rule</field>
+        <field name="model_id" ref="model_res_users"/>
+        <field name="domain_force">[('roms','=',user.roms.id)]</field>
+        <field name="groups" eval="[(4,ref('group_firm'))]"/>
+        <field eval="1" name="perm_unlink"/>
+        <field eval="1" name="perm_write"/>
+        <field eval="1" name="perm_read"/>
+        <field eval="1" name="perm_create"/>
+    </record>
     
+    <record id="user_pmu_rule" model="ir.rule">
+        <field name="name">User pmu rule</field>
+        <field name="model_id" ref="model_res_users"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="groups" eval="[(4,ref('group_pmu'))]"/>
+        <field eval="1" name="perm_unlink"/>
+        <field eval="1" name="perm_write"/>
+        <field eval="1" name="perm_read"/>
+        <field eval="1" name="perm_create"/>
+    </record>
     
 </data>
 </openerp>

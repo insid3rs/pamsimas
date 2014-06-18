@@ -33,13 +33,23 @@ class regional_report_transfer(report_sxw.rml_parse):
         
         obj = self.pool.get('pamsimas.transfer')
         
-        if (form['status'] != False):
-            if (form['status'] == 'confirmed'):
-                transfer_id = obj.search(self.cr, self.uid, [('state', '=', 'confirmed')], context=self.localcontext)
-            if (form['status'] == 'draft'):
-                transfer_id = obj.search(self.cr, self.uid, [('state', '=', 'draft')], context=self.localcontext)
-        else:
+        domain_status = (1,'=',1)
+        domain_periodestart = (1,'=',1)
+        domain_periodestop = (1,'=',1)
+        
+        if(form['status'] != False):
+            domain_status = ('state', '=', form['status'])
+        
+        if(form['periode_start'] != False):
+            domain_periodestart = ('date', '>=', form['periode_start'])
+            
+        if(form['periode_stop'] != False):
+            domain_periodestop = ('date', '<=', form['periode_stop'])    
+        
+        if ((form['status'] == False) & (form['periode_start'] == False) & (form['periode_stop'] == False)):
             transfer_id = obj.search(self.cr, self.uid, [], context=self.localcontext)
+        else:
+            transfer_id = obj.search(self.cr, self.uid, [domain_status,domain_periodestart,domain_periodestop], context=self.localcontext)        
         
         transfer = obj.browse(self.cr, self.uid, transfer_id, context=self.localcontext)
         
@@ -51,13 +61,23 @@ class regional_report_transfer(report_sxw.rml_parse):
         #transfer_id = obj.search(self.cr, self.uid, [], context=self.localcontext)
         #transfer = obj.browse(self.cr, self.uid, transfer_id, context=self.localcontext)
         
-        if (form['status'] != False):
-            if (form['status'] == 'confirmed'):
-                transfer_id = obj.search(self.cr, self.uid, [('state', '=', 'confirmed')], context=self.localcontext)
-            if (form['status'] == 'draft'):
-                transfer_id = obj.search(self.cr, self.uid, [('state', '=', 'draft')], context=self.localcontext)
-        else:
+        domain_status = (1,'=',1)
+        domain_periodestart = (1,'=',1)
+        domain_periodestop = (1,'=',1)
+        
+        if(form['status'] != False):
+            domain_status = ('state', '=', form['status'])
+        
+        if(form['periode_start'] != False):
+            domain_periodestart = ('date', '>=', form['periode_start'])
+            
+        if(form['periode_stop'] != False):
+            domain_periodestop = ('date', '<=', form['periode_stop'])    
+        
+        if ((form['status'] == False) & (form['periode_start'] == False) & (form['periode_stop'] == False)):
             transfer_id = obj.search(self.cr, self.uid, [], context=self.localcontext)
+        else:
+            transfer_id = obj.search(self.cr, self.uid, [domain_status,domain_periodestart,domain_periodestop], context=self.localcontext)        
         
         transfer = obj.browse(self.cr, self.uid, transfer_id, context=self.localcontext)
         
@@ -65,7 +85,7 @@ class regional_report_transfer(report_sxw.rml_parse):
         
         for i in transfer:
             print i.transfer_received
-            total_received += i.transfer_received
+            total_received += i.transfer_amount
         
         return total_received
         
