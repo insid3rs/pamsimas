@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+     <data>
+     
+     <record id="pamsimas_pmu_report_view" model="ir.ui.view">
+            <field name="name">Pamsimas pmu Report</field>
+            <field name="model">pamsimas.pmu.report</field>
+            <field name="arch" type="xml">
+                <form string="Transfer Confirmation Form" version="7.0" >
+                	<sheet>
+                		<group>
+                			<group>
+	                			<field name="status"/>
+	                			<field name="periode_start"/>
+	                			<field name="periode_stop"/>
+	                		</group>
+	                		<group>
+	                			<separator />
+	                		</group>
+                		</group>
+                		<group>
+                			<group>
+	                			<field name="position" on_change="onchange_get_office(position)"/>
+			                    <field name="office" on_change="onchange_get_officer(office)" options="{'create': false, 'create_edit': false}" />
+			                    <field name="officer_name" on_change="onchange_get_officer_user(officer_name)" domain="[('name', '=', '')]" options="{'create': false, 'create_edit': false}"/>
+                    		</group>
+	                		<group>
+	                			<separator />
+	                		</group>
+                		</group>
+                	</sheet>
+                <footer>
+                    <button name="print_report" type="object" string="print report" icon="gtk-print" />
+                	or 
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+                </form>
+            </field>
+        </record>
+     
+     <record id="action_pamsimas_pmu_report" model="ir.actions.act_window">
+     	<field name="name">Pamsimas pmu Reports</field>
+        <field name="res_model">pamsimas.pmu.report</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="pamsimas_pmu_report_view"/>
+        <field name="target">new</field>
+    </record>
+        
+    	
+     
+    </data>
+</openerp>

@@ -170,7 +170,7 @@
         </td>
         <td>
           <para style="P4">
-            [[ o['transfer_received'] or '0']]
+          	[[ formatLang(o['transfer_received']) ]]
           </para>
         </td>
       </tr>
@@ -185,7 +185,7 @@
         </td>
         <td>
           <para style="P4">
-            [[ get_total_transfer(data['form']) or '0']]
+          	[[ formatLang(get_total_transfer(data['form'])) ]]
           </para>
         </td>
       </tr>

@@ -70,6 +70,7 @@ class pamsimas_firm_report(osv.osv_memory):
         'periode_start' : fields.date('Periode Start'),
         'periode_stop'  : fields.date('Periode Stop'),
         'total_transfer': fields.float('Total', digits=(0,0)),
+        'total_received': fields.float('Total', digits=(0,0)),
         
         'position'      : fields.selection((('roms', 'Roms'), ('province','Province'), ('city','City/Kabupaten')),'Position'),
         'office'        : fields.many2one('pamsimas.regional', 'Office'),
@@ -90,7 +91,7 @@ class pamsimas_firm_report(osv.osv_memory):
             
         datas = {'ids': context.get('active_ids', []),
                  'model' : 'pamsimas.transfer'}
-        res = self.read(cr, uid, ids, ['name','transfer','status','periode_start','periode_stop','total_transfer','position','office','officer_name'], context=context)
+        res = self.read(cr, uid, ids, ['name','transfer','status','periode_start','periode_stop','total_transfer','total_received','position','office','officer_name'], context=context)
         res = res and res[0] or {}
         res['transfer'] = res['transfer']
         datas['form'] = res

@@ -18,6 +18,7 @@ class firm_report_transfer(report_sxw.rml_parse):
                                   'get_object':self._get_object,
                                   'get_transfer'    : self._get_transfer,
                                   'get_total_transfer' : self._get_total_transfer,
+                                  'get_total_received' : self._get_total_received,
                                   })
     
     def _get_object(self,data):
@@ -97,7 +98,42 @@ class firm_report_transfer(report_sxw.rml_parse):
             total_received += i.transfer_amount
         
         return total_received
+    
+    def _get_total_received(self, form):
+        obj = self.pool.get('pamsimas.transfer')
         
+        
+        domain_status = (1,'=',1)
+        domain_officer = (1,'=',1)
+        domain_periodestart = (1,'=',1)
+        domain_periodestop = (1,'=',1)
+        
+        if(form['status'] != False):
+            domain_status = ('state', '=', form['status'])
+        
+        if(form['periode_start'] != False):
+            domain_periodestart = ('date', '>=', form['periode_start'])
+            
+        if(form['periode_stop'] != False):
+            domain_periodestop = ('date', '<=', form['periode_stop'])    
+        
+        if(form['officer_name'] != False):
+            domain_officer = ('officer_name', '=', form['officer_name'][0])
+        
+        if ((form['status'] == False) & (form['officer_name'] == False) & (form['periode_start'] == False) & (form['periode_stop'] == False)):
+            transfer_id = obj.search(self.cr, self.uid, [], context=self.localcontext)
+        else:
+            transfer_id = obj.search(self.cr, self.uid, [domain_status,domain_officer,domain_periodestart,domain_periodestop], context=self.localcontext)        
+        
+        transfer = obj.browse(self.cr, self.uid, transfer_id, context=self.localcontext)
+        
+        total_received = 0
+        
+        for i in transfer:
+            #print i.transfer_received
+            total_received += i.transfer_received
+        
+        return total_received
 
 report_sxw.report_sxw('report.pamsimas.firm_report_transfer', 
                       'pamsimas.transfer', 

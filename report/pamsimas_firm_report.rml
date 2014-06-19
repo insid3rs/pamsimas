@@ -238,17 +238,17 @@
         </td>
         <td>
           <para style="P3">
-            [[ o.transfer_amount or '0']]
+          	[[ formatLang(o.transfer_amount) ]]
           </para>
         </td>
         <td>
           <para style="P3">
-            [[ o.transfer_received or '0']]
+          	[[ formatLang(o.transfer_received) ]]
           </para>
         </td>
         <td>
           <para style="P3">
-            [[ o.transfer_amount-o.transfer_received or '0' ]]
+          	[[ formatLang(o.transfer_amount-o.transfer_received) ]]
           </para>
         </td>
       </tr>
@@ -298,17 +298,17 @@
         </td>
         <td>
           <para style="P1">
-             [[ get_total_transfer(data['form']) or '0']]
+           	[[ formatLang(get_total_transfer(data['form'])) ]]
           </para>
         </td>
         <td>
           <para style="P1">
-            <font color="white"> </font>
+          	[[ formatLang(get_total_received(data['form'])) ]]
           </para>
         </td>
         <td>
           <para style="P1">
-            <font color="white"> </font>
+          	[[ formatLang(get_total_transfer(data['form'])-get_total_received(data['form'])) ]]
           </para>
         </td>
       </tr>

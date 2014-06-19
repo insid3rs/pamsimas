@@ -546,9 +546,9 @@
         
         <menuitem id="pamsimas_menu_transaction_menu_transferconfirmation" name="Transfer Confirmation" parent="pamsimas_menu_transaction_menu" action="transferconfirmation_list_action" groups="group_regional,group_pmu"/>
 		
-		<menuitem id="pamsimas_menu_report_menu_regional" name="Report Regional" parent="pamsimas_menu_report_menu" action="action_pamsimas_regional_report" groups="group_regional"/>
-		<menuitem id="pamsimas_menu_report_menu_firm" name="Report Firm" parent="pamsimas_menu_report_menu"  action="action_pamsimas_firm_report" groups="group_firm"/>
-		<menuitem id="pamsimas_menu_report_menu_pmu" name="Report PMU" parent="pamsimas_menu_report_menu" action="user_list_action" groups="group_pmu"/>
+		<menuitem id="pamsimas_menu_report_menu_regional" name="Report Regional" parent="pamsimas_menu_report_menu" action="action_pamsimas_regional_report" groups="group_regional" sequence="10"/>
+		<menuitem id="pamsimas_menu_report_menu_firm" name="Report Firm" parent="pamsimas_menu_report_menu"  action="action_pamsimas_firm_report" groups="group_firm" sequence="5"/>
+		<menuitem id="pamsimas_menu_report_menu_pmu" name="Report PMU" parent="pamsimas_menu_report_menu" action="action_pamsimas_pmu_report" groups="group_pmu" sequence="1"/>
 		
 		
     </data>
