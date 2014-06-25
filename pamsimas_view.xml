@@ -9,7 +9,7 @@
         
         <menuitem id="pamsimas_menu_user_firm" name="Users" groups="group_firm" sequence="1"/>
         <menuitem id="pamsimas_menu_user_user_firm" name="User" parent="pamsimas_menu_user_firm" groups="group_firm"/>
-        <menuitem id="pamsimas_menu_user_user_user_firm" name="User" parent="pamsimas_menu_user_user_firm" action="user_list_action" />
+        
         
         <menuitem id="pamsimas_menu_transaction" name="Transaction" />
 		<menuitem id="pamsimas_menu_transaction_menu" name="Transaction" parent="pamsimas_menu_transaction" />
@@ -79,6 +79,7 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+		<menuitem id="pamsimas_menu_user_user_user_firm" name="User" parent="pamsimas_menu_user_user_firm" action="user_list_action" />
         <menuitem id="pamsimas_menu_users" name="User" parent="pamsimas_menu_user" action="user_list_action" />
 
         
