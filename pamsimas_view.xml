@@ -2,12 +2,14 @@
 <openerp>
     <data>
 
-        <menuitem id="pamsimas_menu" name="Master Data" groups="group_pmu"/>
+        <menuitem id="pamsimas_menu" name="Master Data" groups="group_pmu" sequence="1"/>
         <menuitem id="pamsimas_menu_regional" name="Regional" parent="pamsimas_menu" groups="group_pmu"/>
-        <menuitem id="pamsimas_menu_contract" name="Contract" parent="pamsimas_menu" groups="group_pmu"/>
         <menuitem id="pamsimas_menu_user" name="User" parent="pamsimas_menu" groups="group_pmu"/>
         
-        <menuitem id="pamsimas_menu_user_firm" name="Users" groups="group_firm" sequence="1"/>
+        <menuitem id="pamsimas_menu_contract" name="Contract" groups="group_pmu"/>
+        <menuitem id="pamsimas_menu_contract_contract" name="Contract" parent="pamsimas_menu_contract" groups="group_pmu"/>
+        
+        <menuitem id="pamsimas_menu_user_firm" name="Users" groups="group_firm" sequence="2"/>
         <menuitem id="pamsimas_menu_user_user_firm" name="User" parent="pamsimas_menu_user_firm" groups="group_firm"/>
         
         
@@ -279,7 +281,6 @@
 		
         <menuitem id="pamsimas_menu_regional_city" name="City/Kabupaten" parent="pamsimas_menu_regional" action="city_list_action"/>
         
-        
         <!-- =========================Contract============================= -->
        	<record model="ir.ui.view" id="contract_form_view">
             <field name="name">contractitem.form</field>
@@ -294,6 +295,7 @@
 	                			<field name="contract" on_change="update_detail(contract,subcontract)"/>
 		                    	<field name="subcontract" on_change="update_detail(contract,subcontract)"/>
 		                    	<field name="unit" />
+		                    	<field name="volume" />
 		                    	<field name="read_only" />
 	                    	</group>
 	                    	<group/>
@@ -316,6 +318,8 @@
                 <tree string="Contract Tree">
                     <field name="contract" />
                     <field name="subcontract" />
+                    <field name="unit" />
+                    <field name="volume" />
                 </tree>
             </field>
         </record>
@@ -326,7 +330,59 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
-        <menuitem id="pamsimas_menu_contract_item" name="Contract Item" parent="pamsimas_menu_contract" action="contract_list_action"/>
+        <menuitem id="pamsimas_menu_contract_item" name="Contract Item" parent="pamsimas_menu_contract_contract" action="contract_list_action"/>
+        
+        
+        <!-- =========================Contract Amandment============================= -->
+       	<record model="ir.ui.view" id="contract_amandment_form_view">
+            <field name="name">contractamandment.form</field>
+            <field name="model">pamsimas.contractamandment</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Contract Form" version="7.0">
+                	<sheet>
+                		<group>
+                			<group string="Contract Amandment">
+                				<field name="name" />
+                				<field name="roms" />
+	                			<field name="date_start" />
+	                			<field name="date_end" />
+	                			<field name="description" />
+	                			<button name="refresh_data" string="Refresh Amandment" type="object" class="oe_highlight" invisible="1"/>
+                			</group>
+	                    	<group/>
+                		</group>
+	                    <notebook >
+	                    	<page string="Contract Item">
+	                    		<field name="contract_many2many" />
+		                	</page>
+	                    </notebook>
+                	</sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="contract_amandment_tree_view">
+            <field name="name">contractamandment.tree</field>
+            <field name="model">pamsimas.contractamandment</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Contract Tree">
+                    <field name="name" />
+                    <field name="roms" />
+                    <field name="date_start" />
+                    <field name="date_end" />
+                </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="contract_amandment_list_action">
+            <field name="name">Contract Amendments</field>
+            <field name="res_model">pamsimas.contractamandment</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="pamsimas_menu_contract_amandment" name="Contract Amandment" parent="pamsimas_menu_contract_contract" action="contract_amandment_list_action" />
         
         <!-- =========================Transfer============================= -->
         <record model="ir.ui.view" id="transfer_form_view">
@@ -336,7 +392,7 @@
             <field name="arch" type="xml">
                 <form string="Transfer Form" version="7.0">
                     <header>
-                		<field name="state" widget="statusbar" statusbar_visible="draft,confirmed" statusbar_colors='{"draft":"red", "confirmed":"red"}'/>
+                		<field name="state" widget="statusbar" statusbar_visible="draft,confirmed,actual" statusbar_colors='{"draft":"red", "confirmed":"red","actual":"red"}'/>
                     </header>
                     <sheet>
                     	<group string="Transfer Details" colspan="2">
@@ -370,7 +426,10 @@
                     	</notebook>
                     	<notebook>
 	                    	<page string="Kontrak">
-		                        <field name="transfer_contract_ids" nolabel="1">
+		                        <group colspan="2" >
+                    				<field name="contract_amandment" colspan="2" />
+                    			</group>
+		                        <field name="transfer_contract_ids" nolabel="1"  >
 		                        	<form string="contract" version="7.0">
 		                        		<group>
 		                        			<field name="name" />
@@ -446,7 +505,7 @@
             <field name="arch" type="xml">
                 <form string="Transfer Confirmation Form" version="7.0" create="false">
                 	<header>
-                		<field name="state" widget="statusbar" statusbar_visible="draft, confirmed" statusbar_colors='{"draft":"red", "confirmed":"blue"}'/>
+                		<field name="state" widget="statusbar" statusbar_visible="draft,confirmed,actual" statusbar_colors='{"draft":"red","confirmed":"blue","actual":"red"}'/>
                 		<button name="transfer_confirm" string="Confirm Transaction" type="object" class="oe_highlight" attrs="{'invisible':[('transfer_received','=',0)]}" />
                 		<button name="confirm" states="comment" string="Confirm Transaction" type="workflow" class="oe_highlight"/>
                 	</header>
@@ -481,6 +540,9 @@
                     	</notebook>
                     	<notebook >
 	                    	<page string="Kontrak">
+	                    		<group colspan="2" >
+                    				<field name="contract_amandment" colspan="2" />
+                    			</group>
 		                        <field name="transfer_contract_ids" nolabel="1">
 		                        	<form string="contract" version="7.0">
 		                        		<group>
@@ -546,6 +608,128 @@
 		</record>
         
         <menuitem id="pamsimas_menu_transaction_menu_transferconfirmation" name="Transfer Confirmation" parent="pamsimas_menu_transaction_menu" action="transferconfirmation_list_action" groups="group_regional,group_pmu"/>
+		
+		<!-- =========================Transfer Actual============================= -->
+        <record model="ir.ui.view" id="transferactual_form_view">
+            <field name="name">transferactual.form</field>
+            <field name="model">pamsimas.transfer</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Transfer Actual Form" version="7.0" create="false">
+                	<header>
+                		<field name="state" widget="statusbar" statusbar_visible="draft, confirmed, actual" statusbar_colors='{"draft":"red", "confirmed":"red", "actual":"blue"}'/>
+                		<button name="transfer_confirm_actual" string="Confirm Actual Transaction" type="object" class="oe_highlight" attrs="{'invisible':[('transfer_actual_received','=',0)]}" />
+                		<button name="confirm_actual" states="comment" string="Confirm Actual Transaction" type="workflow" class="oe_highlight"/>
+                	</header>
+                    <sheet>
+                    	<group string="Transfer Details">
+	                    	<group>
+	                    		<field name="name" readonly="True"/>
+	                    		<field name="temp_office" />
+	                    	</group>
+                    		<group/>
+                    	</group>
+                    	<group>
+                    		<group>
+                    			<field name="date" readonly="True"/>
+                    			<field name="position" readonly="True"/>
+			                    <field name="office" readonly="True"/>
+                    		</group>
+	                    	<group>
+			                    <field name="receiver_bank" readonly="True"/>
+			                    <field name="receiver_name" readonly="True"/>
+			                    <field name="receiver_bank_no" readonly="True"/>
+			                    <field name="thp" readonly="True"/>
+	                    	</group>
+                    	</group>
+                    	<notebook>
+                    		<page string="Actual Transfer Confirmation"  >
+                    			<group string="Actual Transfer Confirmation" colspan="2" >
+                    				<field name="transfer_received_date" colspan="2" attrs="{'required':[('state','==','draft')]}" readonly="True"/>
+                   					<field name="transfer_received" colspan="2" attrs="{'required':[('state','==','draft')]}" readonly="True"/>
+                    			</group>
+                    			<group colspan="2" >
+                    				<field name="transfer_actual_received_date" colspan="2" attrs="{'required':[('state','==','draft')]}"/>
+                   					<field name="transfer_actual_received" colspan="2" attrs="{'required':[('state','==','draft')]}"/>
+                    			</group>
+                    		</page>
+                    	</notebook>
+                    	<notebook >
+	                    	<page string="Kontrak">
+	                    		<group colspan="2" >
+                    				<field name="contract_amandment" colspan="2" />
+                    			</group>
+		                        <field name="transfer_contract_ids" nolabel="1">
+		                        	<form string="contract" version="7.0">
+		                        		<group>
+		                        			<field name="name" options="{'create': false, 'create_edit': false}"/>
+		                            		<field name="quantity" on_change="update_total_value(quantity,contract_value)"/>
+		                            		<field name="unit" readonly="True" />
+		                            		<field name="received_contract_value" on_change="update_total_value(quantity,contract_value)"/>
+		                            		<field name="transfer_actual" />
+		                            		<button name="return_action_to_open" icon="gtk-ok" type="object"/>
+		                            	</group>
+		                            </form>
+		                            <tree string="Contract" editable="bottom">
+		                                <field name="name" readonly="True"/>
+		                                <field name="quantity" readonly="True"/>
+		                                <field name="unit" readonly="True"/>
+		                                <field name="received_contract_value" readonly="True"/>
+		                                <field name="transfer_actual" />
+		                                <button name="return_action_to_open" icon="gtk-ok" type="object" />
+		                            </tree>
+		                        </field>
+		                	</page>
+	                    </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        
+        <record model="ir.ui.view" id="transferactual_tree_view">
+            <field name="name">transferactual.tree</field>
+            <field name="model">pamsimas.transfer</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Transfer Actual Tree" colors="blue:state=='confirmed'">
+                    <field name="state" />
+                	<field name="name" />
+                    <field name="transfer_received_date" />
+                    <field name="office" />
+                    <field name="receiver_name" string="name"/>
+                    <field name="receiver_bank" />
+                    <field name="receiver_bank_no" string="Account No"/>
+                    <field name="transfer_received" />
+                    <field name="transfer_actual_received" />
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="transferactual_list_action">
+            <field name="name">Transfer Actual</field>
+            <field name="res_model">pamsimas.transfer</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            
+            <field name="domain">[('state','!=','draft')]</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="transferactual_list_action_tree_view">
+		    <field eval="1" name="sequence"/>
+		    <field name="view_mode">tree</field>
+		    <field name="view_id" ref="transferactual_tree_view"/>
+		    <field name="act_window_id" ref="transferactual_list_action"/>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="transferactual_list_action_form_view">
+		    <field eval="2" name="sequence"/>
+		    <field name="view_mode">form</field>
+		    <field name="view_id" ref="transferactual_form_view"/>
+		    <field name="act_window_id" ref="transferactual_list_action"/>
+		</record>
+        
+        <menuitem id="pamsimas_menu_transaction_menu_transferactual" name="Transfer Actual" parent="pamsimas_menu_transaction_menu" action="transferactual_list_action" groups="group_regional,group_pmu"/>
 		
 		<menuitem id="pamsimas_menu_report_menu_regional" name="Report Regional" parent="pamsimas_menu_report_menu" action="action_pamsimas_regional_report" groups="group_regional" sequence="10"/>
 		<menuitem id="pamsimas_menu_report_menu_firm" name="Report Firm" parent="pamsimas_menu_report_menu"  action="action_pamsimas_firm_report" groups="group_firm" sequence="5"/>

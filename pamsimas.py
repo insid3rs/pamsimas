@@ -249,7 +249,10 @@ class Transfer(osv.osv):
             'datas': datas,
         }
 
-    
+    def onchange_amandment(contract_amandment):
+        res={}
+        return res
+        
     def _get_office(self, cr, uid, ids, field_name, arg, context=None):
         res ={}
         
@@ -266,12 +269,14 @@ class Transfer(osv.osv):
 
         return res
     
+    
+    
     _name   = 'pamsimas.transfer'
     _description = 'Pamsimas Transfer' 
     _order = 'state desc, date desc'
     _columns    = {
-        'name'          : fields.char('No Bukti Transfer', size=128, required = True),
-        'state'         : fields.selection([('draft','Not confirmed'),('confirmed','Confirmed')],'State',required=True,readonly=True, track_visibility='onchange'),
+        'name'          : fields.char('No Bukti Transfer', size=128),
+        'state'         : fields.selection([('draft','Not confirmed'),('confirmed','Confirmed'),('actual','Actual Confirmed')],'State',required=True,readonly=True, track_visibility='onchange'),
         
         'date'          : fields.date('Date'),
         'roms'          : fields.many2one('pamsimas.roms','Roms', ondelete='cascade'),
@@ -292,7 +297,12 @@ class Transfer(osv.osv):
         'transfer_received' : fields.float('Received Amount Total', digits=(0,0)),
         'transfer_received_total'   : fields.float('Total Received Transfer', digits=(0,0)),
         
-        'transfer_contract_ids'  : fields.one2many('pamsimas.contract','contract_id','Transfer Contract', ondelete='cascade'),
+        'transfer_actual_received_date'    : fields.date('Actual Transfer Received Date'),
+        'transfer_actual_received' : fields.float('Actual Received Amount Total', digits=(0,0)),
+        'transfer_actual_received_total'   : fields.float('Actual Total Received Transfer', digits=(0,0)),
+        
+        'contract_amandment'       : fields.many2one('pamsimas.contractamandment', 'Contract amandment'),
+        'transfer_contract_ids' : fields.one2many('pamsimas.contract','contract_id','Transfer Contract', ondelete='cascade'),
         
         'description'   : fields.text('Description'),
         'sender_id'     : fields.char('Sender', invisible=True),
@@ -327,6 +337,26 @@ class Transfer(osv.osv):
         else:
             return self.write(cr, uid, ids, {'state': 'confirmed'}, context=context)
  
+    def transfer_confirm_actual(self, cr, uid, ids, context=None):
+        # set to "confirmed" state
+        
+        total_actual_transfer_received = 0
+        total_actual_contract_received = 0
+        
+        for line1 in self.browse(cr, uid, ids, context):
+            #print line1.transfer_received
+            total_actual_transfer_received = line1.transfer_actual_received
+            
+            for line2 in line1.transfer_contract_ids:
+                #print line2.received_contract_value
+                total_actual_contract_received += line2.transfer_actual
+
+        if(total_actual_transfer_received != total_actual_contract_received):
+            res = {}
+            #return {'warning':{'title':'warning','message':'Negative margin on this line'}}
+            raise osv.except_osv(("Warning"),("Adanya perbedaan jumlah antara Actual Total Received Amount Confirmation dan Actual Total Received Amount pada Contract"))
+        else:
+            return self.write(cr, uid, ids, {'state': 'actual'}, context=context)
 
 class Contract(osv.osv):
     def update_total_value(self, cr, uid, ids, quantity, contract_value, context=None): 
@@ -351,6 +381,14 @@ class Contract(osv.osv):
         
         return {'value':res}
     
+    def return_action_to_open(self, cr, uid, ids, context=None):
+        res = {}
+        total = 8888
+        res['transfer_actual']=total
+        print total
+        return self.write(cr, uid, ids, {'transfer_actual': total}, context=context)
+    
+    
     _name           = 'pamsimas.contract'
     _description    = 'Transaction Type'
     _columns         = {
@@ -360,9 +398,11 @@ class Contract(osv.osv):
         'unit'          : fields.char('Unit'),
         'contract_value': fields.float('Transfer Amount', digits=(0,0)),
         'received_contract_value' : fields.float('Received Amount', digits=(0,0)),
+        'transfer_actual'   : fields.float('Expenditure Amount', digits=(0,0)),
         'contract_value_total': fields.float('Total Value', digits=(0,0)),
         'description'   : fields.text('Description'),
         'contract_id'  : fields.many2one('pamsimas.transfer', 'Contract', ondelete='cascade'),
+        #'contract_id_amandment'  : fields.many2one('pamsimas.contractamandment', 'Contract', ondelete='set null'),
         #'contract_id'  : fields.many2one('pamsimas.transferconfirmation', 'Contract'),
     }
     
@@ -388,7 +428,40 @@ class ContractItem(osv.osv):
         'contract'      : fields.char('Contract Type'),
         'subcontract'   : fields.char('Sub-Contract'),
         'unit'          : fields.char('Unit'),
+        'volume'        : fields.float('Volume', digits=(0,0)),
         'read_only'     : fields.boolean('Read Only'),
         'description'   : fields.text('Description'),
         
+        'contractitem_id'  : fields.many2one('pamsimas.contractamandment', 'Amandment', ondelete='set null'),
     }
+    
+class ContractAmandment(osv.osv):
+    
+    def _get_default_contractids(self, cr, uid, context=None):
+        tempObj = self.pool.get('pamsimas.contractitem').search(cr, uid, [])
+        return tempObj
+    
+    def refresh_data(self, cr, uid, ids, context=None):
+        
+        res = {}
+        res['contract_many2many']=self.pool.get('pamsimas.contractitem').search(cr, uid, [])
+            
+        return {'value':res} 
+    
+    _name           = 'pamsimas.contractamandment'
+    _description    = 'Contract Amandment'
+    _columns         = {
+        'name'          : fields.char('Contract Amandment Name', required = True),
+        'date_start'    : fields.date('Amandment Start', required = True),
+        'date_end'      : fields.date('Amandment End', required = True),
+        'description'   : fields.text('Description'),
+        'roms'          : fields.many2one('pamsimas.roms', 'Roms', required = True),
+        #'transfer_contract_ids'  : fields.one2many('pamsimas.contractitem','contractitem_id','Contract Item', ondelete='set null'), 
+        #'transfer_contract_ids'  : fields.one2many('pamsimas.contract','contract_id_amandment','Contract Item', ondelete='set null'), 
+        'contract_many2many' : fields.many2many('pamsimas.contractitem','res_contractitem_rel','name','contractitem_id'),
+    }
+    
+    _defaults = {
+        'contract_many2many' : _get_default_contractids,
+    }
+    
