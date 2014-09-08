@@ -1,3 +1,7 @@
+.openerp .rallign {
+  text-align: right;
+}
+
 .openerp .oe_login {
   background-image: url('../img/background3.jpg');
   text-align: center;

@@ -55,9 +55,7 @@ class pamsimas_firm_report(osv.osv_memory):
             res['receiver_bank_no']=p.receiver_bank_no
             res['thp']=p.thp
 
-
         return {'value':res}  
-    
     
     
     _name = "pamsimas.firm.report"

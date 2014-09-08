@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="pamsimas_import_link_view" model="ir.ui.view">
+            <field name="name">Transfer Confirmation</field>
+            <field name="model">pamsimas.importlink</field>
+            <field name="arch" type="xml">
+                <form string="test" version="7.0">
+                   	<group string="Import Transfer File" >
+                   		
+                   		<group colspan="2">
+                   			<field name="desc" />
+                   			<field name="desc2" />
+                   		</group>
+                    	<group colspan="2">
+                    		<field name="import_urlR1" widget="url" readonly="True"/>
+                    		<field name="import_urlR2" widget="url" readonly="True"/>
+                    		<field name="import_urlR3" widget="url" readonly="True"/>
+                    		<field name="import_urlR4" widget="url" readonly="True"/>
+                    		<field name="import_urlR5" widget="url" readonly="True"/>
+                    		<field name="import_urlR6" widget="url" readonly="True"/>
+                    		<field name="import_urlR7" widget="url" readonly="True"/>
+                    	</group>
+                   	</group>
+                    <footer>
+                		<button name="transfer_confirm" string="OK" type="object" class="oe_highlight"/>
+                	</footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_import_link" model="ir.actions.act_window">
+            <field name="name">Import Link</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pamsimas.importlink</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        
+    </data>
+</openerp>

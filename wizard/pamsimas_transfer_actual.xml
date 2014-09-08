@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="pamsimas_temp_transfer_confirmation_view" model="ir.ui.view">
+            <field name="name">Temp Transfer Confirmation</field>
+            <field name="model">pamsimas.temptransferactual</field>
+            <field name="arch" type="xml">
+                <form string="test" version="7.0">
+                	<button name="refresh_data" string="Refresh Data" type="object" class="oe_highlight"/>
+                			
+                	<field name="contract_transfer_actual_ids" nolabel="1">
+                    	<form string="contract" version="7.0">
+                    		<group>
+                    			<field name="name" options="{'create': false, 'create_edit': false}"/>
+                    			<field name="debit" />
+	                            <field name="kredit" />
+                    		</group>
+                        </form>
+                        <tree string="Contract" editable="bottom">
+                            <field name="name" />
+                            <field name="debit" />
+                            <field name="kredit" />
+                        </tree>
+                    </field>
+                   	
+                    <footer>
+                		<button string="cancel" special="cancel" class="oe_highlight"/>
+                		<button name="confirm_transaction" string="Confirm Transaction" type="object" class="oe_highlight"/>
+                	</footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_pamsimas_transfer_actual" model="ir.actions.act_window">
+            <field name="name">Transfer Actual</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pamsimas.temptransferactual</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="domain">[]</field>
+        </record>
+    </data>
+</openerp>

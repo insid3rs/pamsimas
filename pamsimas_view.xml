@@ -295,7 +295,6 @@
 	                			<field name="contract" on_change="update_detail(contract,subcontract)"/>
 		                    	<field name="subcontract" on_change="update_detail(contract,subcontract)"/>
 		                    	<field name="unit" />
-		                    	<field name="volume" />
 		                    	<field name="read_only" />
 	                    	</group>
 	                    	<group/>
@@ -319,7 +318,6 @@
                     <field name="contract" />
                     <field name="subcontract" />
                     <field name="unit" />
-                    <field name="volume" />
                 </tree>
             </field>
         </record>
@@ -383,6 +381,79 @@
             <field name="view_mode">tree,form</field>
         </record>
         <menuitem id="pamsimas_menu_contract_amandment" name="Contract Amandment" parent="pamsimas_menu_contract_contract" action="contract_amandment_list_action" />
+        
+        <!-- =========================Contract Baseline============================= -->
+       	<record model="ir.ui.view" id="contract_baseline_form_view">
+            <field name="name">contractbaseline.form</field>
+            <field name="model">pamsimas.contractbaseline</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Contract Form" version="7.0">
+                	<sheet>
+                		<group>
+                			<group string="Contract Baseline">
+                				<field name="name" />
+                				<field name="roms" />
+                				<field name="date_start" />
+	                    		<field name="date_end" />
+	                		</group>
+	                    	<group/>
+                		</group>
+                		<notebook >
+	                    	<page string="Kontrak Baseline">
+		                		<group colspan="2" >
+				                	<field name="saldo_awal" on_change="test(saldo_awal)"/>
+				                </group>
+		                		<group colspan="2">
+		                			<field name="contract_baseline_ids" nolabel="1"  on_change="test(saldo_awal)">
+			                        	<form string="Contract Baseline" version="7.0" >
+			                        		<group>
+			                        			<field name="name" />
+			                            		<field name="total_budget" on_change="update_total_value_baseline(total_budget,invoice_todate)"/>
+			                            		<field name="invoice_todate" on_change="update_total_value_baseline(total_budget,invoice_todate)"/>
+			                            		<field name="invoice_remaining" />
+			                            	</group>
+			                            </form>
+			                            <tree string="Contract" editable="bottom">
+			                                <field name="name" />
+		                            		<field name="total_budget" on_change="update_total_value_baseline(total_budget,invoice_todate)"/>
+		                            		<field name="invoice_todate" on_change="update_total_value_baseline(total_budget,invoice_todate)"/>
+		                            		<field name="invoice_remaining" />
+			                            </tree>
+			                        </field>
+				                </group>
+				                <group colspan="2" >
+				                	<field name="saldo_akhir" />
+				                	<field name ="cummulative_saldo_akhir" />
+				                </group>
+				          </page>
+				      </notebook>
+                	</sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="contract_baseline_tree_view">
+            <field name="name">contractbaseline.tree</field>
+            <field name="model">pamsimas.contractbaseline</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Contract Tree">
+                    <field name="name" />
+                    <field name="roms" />
+                </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="contract_baseline_list_action">
+            <field name="name">Contract Baseline</field>
+            <field name="res_model">pamsimas.contractbaseline</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="pamsimas_menu_contract_baseline" name="Contract Baseline" parent="pamsimas_menu_contract_contract" action="contract_baseline_list_action" />
+        
+        
         
         <!-- =========================Transfer============================= -->
         <record model="ir.ui.view" id="transfer_form_view">
@@ -566,7 +637,6 @@
             </field>
         </record>
         
-        
         <record model="ir.ui.view" id="transferconfirmation_tree_view">
             <field name="name">transferconfirmation.tree</field>
             <field name="model">pamsimas.transfer</field>
@@ -658,25 +728,37 @@
 	                    	<page string="Kontrak">
 	                    		<group colspan="2" >
                     				<field name="contract_amandment" colspan="2" />
+                    				
                     			</group>
-		                        <field name="transfer_contract_ids" nolabel="1">
+                    			<field name="transfer_contract_ids" nolabel="1"  on_change="updateactual_transfer(transfer_contract_ids)">
 		                        	<form string="contract" version="7.0">
 		                        		<group>
-		                        			<field name="name" options="{'create': false, 'create_edit': false}"/>
-		                            		<field name="quantity" on_change="update_total_value(quantity,contract_value)"/>
+		                        			<field name="name" options="{'create': false, 'create_edit': false}" readonly="True"/>
+		                            		<field name="quantity" on_change="update_total_value(quantity,contract_value)" readonly="True"/>
 		                            		<field name="unit" readonly="True" />
-		                            		<field name="received_contract_value" on_change="update_total_value(quantity,contract_value)"/>
-		                            		<field name="transfer_actual" />
-		                            		<button name="return_action_to_open" icon="gtk-ok" type="object"/>
+		                            		<field name="received_contract_value" on_change="update_total_value(quantity,contract_value)" readonly="True"/>
+		                            		<field name="transfer_actual" readonly="True"/>
+		                            		<field name="contract_transfer_actual_ids" on_change="updateactual(contract_transfer_actual_ids)">
+		                            			<form string="contract" version="7.0">
+		                            				<group>
+		                        						<field name="name"/>
+		                        						<field name="debit"/>
+		                        					</group>
+		                        				</form>
+		                        				<tree string="Contract" >
+		                        					<field name="name"/>
+		                        					<field name="debit"/>
+		                        				</tree>
+		                            		</field> 
 		                            	</group>
 		                            </form>
-		                            <tree string="Contract" editable="bottom">
+		                            <tree string="Contract" >
 		                                <field name="name" readonly="True"/>
 		                                <field name="quantity" readonly="True"/>
 		                                <field name="unit" readonly="True"/>
 		                                <field name="received_contract_value" readonly="True"/>
 		                                <field name="transfer_actual" />
-		                                <button name="return_action_to_open" icon="gtk-ok" type="object" />
+		                            	<button name="check_transfer_actual" icon="gtk-ok" type="object" class="oe_highlight" invisible="1"/>
 		                            </tree>
 		                        </field>
 		                	</page>
@@ -685,7 +767,6 @@
                 </form>
             </field>
         </record>
-        
         
         <record model="ir.ui.view" id="transferactual_tree_view">
             <field name="name">transferactual.tree</field>
@@ -711,7 +792,6 @@
             <field name="res_model">pamsimas.transfer</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            
             <field name="domain">[('state','!=','draft')]</field>
         </record>
         
@@ -731,10 +811,107 @@
         
         <menuitem id="pamsimas_menu_transaction_menu_transferactual" name="Transfer Actual" parent="pamsimas_menu_transaction_menu" action="transferactual_list_action" groups="group_regional,group_pmu"/>
 		
+		<!-- =========================Buku Bank============================= -->
+        <record model="ir.ui.view" id="bukubank_form_view">
+            <field name="name">bukubank.form</field>
+            <field name="model">pamsimas.bukubank</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Buku Bank Form" version="7.0" create="false">
+                	<sheet>
+                    	<group string="Buku Bank" colspan="2">
+	                    	<group>
+	                    		<field name="name" />
+	                    		<field name="date_start" />
+	                    		<field name="date_end" />
+	                    		<field name="contract_id_bukubank" />
+	                    		<button name="refresh_data_bukubank" string="(update)" class="oe_link oe_edit_only" type="object" help="Refresh Data"/>
+                			</group>
+                    	</group>
+                    	<notebook>
+                    		<page string="Actual Transfer Confirmation"  >
+                    			<field name="transfer_contract_ids" nolabel="1" >
+		                        	<form string="contract" version="7.0">
+		                        		<group>
+		                        			<field name="name" options="{'create': false, 'create_edit': false}" />
+		                            		<field name="quantity" on_change="update_total_value(quantity,contract_value)" />
+		                            		<field name="unit" />
+		                            		<field name="received_contract_value" on_change="update_total_value(quantity,contract_value)" />
+		                            		<field name="transfer_actual" />
+		                            		<field name="contract_transfer_actual_ids"/>
+		                            		</group>
+		                            </form>
+		                            <tree string="Contract" editable="bottom" >
+		                                <field name="name" />
+		                                <field name="quantity" />
+		                                <field name="unit" readonly="True"/>
+		                                <field name="received_contract_value"/>
+		                                <field name="transfer_actual" />
+		                            	</tree>
+		                        </field>
+                    			<field name="transfer_ids" nolabel="1">
+		                        	<form string="Transfer" version="7.0">
+		                        		<group>
+		                        			<field name="name" options="{'create': false, 'create_edit': false}" />
+		                            		<field name="transfer_received" />
+		                            	</group>
+		                            </form>
+		                            <tree string="Transfer" editable="bottom" >
+		                                <field name="name" />
+		                                <field name="transfer_received" />
+		                            </tree>
+		                        </field>
+                    		</page>
+                    	</notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="bukubank_tree_view">
+            <field name="name">bukubank.tree</field>
+            <field name="model">pamsimas.bukubank</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Buku Bank Tree">
+                	<field name="name" />
+                    <field name="date_start" />
+                    <field name="date_end" />
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="bukubank_action">
+            <field name="name">Buku Bank</field>
+            <field name="res_model">pamsimas.bukubank</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain"></field>
+        </record>
+		
+		<record model="ir.actions.act_window.view" id="bukubank_action_tree_view">
+		    <field eval="1" name="sequence"/>
+		    <field name="view_mode">tree</field>
+		    <field name="view_id" ref="bukubank_tree_view"/>
+		    <field name="act_window_id" ref="bukubank_action"/>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="bukubank_action_form_view">
+		    <field eval="2" name="sequence"/>
+		    <field name="view_mode">form</field>
+		    <field name="view_id" ref="bukubank_form_view"/>
+		    <field name="act_window_id" ref="bukubank_action"/>
+		</record>
+        
+        <menuitem id="pamsimas_menu_transaction_menu_bukubank" name="Buku Bank" parent="pamsimas_menu_transaction_menu" action="bukubank_action" groups="group_regional,group_pmu,group_firm"/>
+		<menuitem id="pamsimas_menu_transaction_menu_bukubank2" name="Buku Bank Report" parent="pamsimas_menu_transaction_menu" action="action_pamsimas_bank_report" groups="group_regional,group_pmu,group_firm"/>
+		
+        <menuitem id="pamsimas_menu_importlink" name="Import File Excel" parent="pamsimas_menu_transaction_menu" action="action_import_link" groups="group_regional,group_pmu,group_firm" sequence="11"/>
+        
+        
 		<menuitem id="pamsimas_menu_report_menu_regional" name="Report Regional" parent="pamsimas_menu_report_menu" action="action_pamsimas_regional_report" groups="group_regional" sequence="10"/>
 		<menuitem id="pamsimas_menu_report_menu_firm" name="Report Firm" parent="pamsimas_menu_report_menu"  action="action_pamsimas_firm_report" groups="group_firm" sequence="5"/>
 		<menuitem id="pamsimas_menu_report_menu_pmu" name="Report PMU" parent="pamsimas_menu_report_menu" action="action_pamsimas_pmu_report" groups="group_pmu" sequence="1"/>
-		
 		
     </data>
 </openerp>

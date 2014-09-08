@@ -15,6 +15,8 @@
                    'wizard/pamsimas_regional_report.xml',
                    'wizard/pamsimas_firm_report.xml',
                    'wizard/pamsimas_pmu_report.xml',
+                   'wizard/pamsimas_import_link.xml',
+                   'wizard/pamsimas_bank_report.xml',
                    'pamsimas_view.xml'],
     "css" : [
         'static/src/css/modified_theme.css',
