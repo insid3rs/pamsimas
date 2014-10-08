@@ -78,6 +78,7 @@ class ROMS(osv.osv):
     _columns         = {
         'name'          : fields.char('ROMS', size=128, required = True),
         'roms'          : fields.one2many('pamsimas.regional', 'roms', 'Roms', ondelete='cascade'),
+        
         #'description'   : fields.text('Description'),
         #'prov_ids': fields.one2many(obj.prov)
     }
@@ -157,7 +158,7 @@ class Regional(osv.osv):
         'province'      : fields.many2one('pamsimas.province', 'Province', ondelete='cascade'),
         'city'          : fields.many2one('pamsimas.city','City', ondelete='cascade'),
         'description'   : fields.text('Description'),
-    }
+}
     
 class Transfer(osv.osv):
     
@@ -299,8 +300,8 @@ class Transfer(osv.osv):
     
     def updateactual_transfer(self, cr, uid, ids, transfer_contract_ids, context=None): 
         
-        
-        self.pool.get('pamsimas.transfer').write(cr,uid,ids,{'transfer_contract_ids':transfer_contract_ids})
+        #ini yang bikin dobel
+        #self.pool.get('pamsimas.transfer').write(cr,uid,ids,{'transfer_contract_ids':transfer_contract_ids})
         
         
         tempContractItemID = self.pool.get('pamsimas.contract').search(cr, uid, [('contract_id','in',ids)])
@@ -314,6 +315,8 @@ class Transfer(osv.osv):
         res['transfer_actual_received']=total
         
         return {'value':res} 
+    
+    
     
     
     
@@ -483,21 +486,35 @@ class Contract(osv.osv):
         
         tempTransActualID = self.pool.get('pamsimas.transferactual').search(cr, uid, [('contract_transfer_actual_id','in',ids)])
         tempTransActualObj = self.pool.get('pamsimas.transferactual').browse(cr, uid, tempTransActualID)
-        
-        self.pool.get('pamsimas.contract').unlink(cr, uid, tempTransActualID)
-        self.pool.get('pamsimas.contract').write(cr,uid,ids,{'contract_transfer_actual_ids':contract_transfer_actual_ids})
-        
+    
+        print tempTransActualID
+        print tempTransActualObj
+    
+        #self.pool.get('pamsimas.contract').unlink(cr, uid, tempTransActualID)
+        #ini jg bikin duplikat
+        #self.pool.get('pamsimas.contract').write(cr,uid,ids,{'contract_transfer_actual_ids':contract_transfer_actual_ids})
         
         total = 0
         for o in tempTransActualObj:
-            print o.debit
+            #print o.debit
             total = total + o.debit
-            print total
-            print '==========='
+            #print total
+            #print '==========='
+            
+            
+        for o in contract_transfer_actual_ids:
+            if(o[0] == 0):
+                print o[2]['debit']
+                total = total + o[2]['debit']
+                
+        print total
+            
+        
         
         self.pool.get('pamsimas.contract').write(cr, uid, ids,{'transfer_actual':total})
         
         res['transfer_actual']=total
+        print 'totalnya' 
         print res['transfer_actual']
         
         return {'value':res}
