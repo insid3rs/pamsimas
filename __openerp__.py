@@ -1,7 +1,7 @@
 {
     "name"  : "Pamsimas",
     "version"   : "1.0",
-    "depends"   : ['base','web'],
+    "depends"   : ['base','web','board'],
     "author"    : "Ramanandha Pradana",
     "category"  : "Custom Application",
     "description"   : """
@@ -29,6 +29,6 @@
     ],
     "demo"      : [],
     "installable"   : True,
-    "auto_install"  : False,
+    "auto_install"  : True,
 
 }

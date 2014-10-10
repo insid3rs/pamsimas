@@ -16,8 +16,7 @@
         <menuitem id="pamsimas_menu_transaction" name="Transaction" />
 		<menuitem id="pamsimas_menu_transaction_menu" name="Transaction" parent="pamsimas_menu_transaction" />
 		
-		<menuitem id="pamsimas_menu_report" name="Report" />
-		<menuitem id="pamsimas_menu_report_menu" name="Report" parent="pamsimas_menu_report" />
+		<menuitem id="pamsimas_menu_report_menu" name="Report" parent="base.menu_reporting" sequence="20"/>
 		
         <!-- =========================User============================= -->
         
@@ -543,12 +542,23 @@
                 </tree>
             </field>
         </record>
+        
+        <record model="ir.ui.view" id="transfer_graph_view">
+			<field name="name">transfer.graph</field>
+			<field name="model">pamsimas.transfer</field>
+			<field name="arch" type="xml">
+				<graph string="Transfer Graph" type="pie">
+					<field name="office" group="true" />
+					<field name="transfer_received" operator="+" />
+				</graph>
+			</field>
+		</record>
 
         <record model="ir.actions.act_window" id="transfer_list_action">
             <field name="name">Transfer</field>
             <field name="res_model">pamsimas.transfer</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,form,graph</field>
             <field name="domain">[]</field>
         </record>
         
@@ -563,6 +573,13 @@
 		    <field eval="2" name="sequence"/>
 		    <field name="view_mode">form</field>
 		    <field name="view_id" ref="transfer_form_view"/>
+		    <field name="act_window_id" ref="transfer_list_action"/>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="transfer_list_action_graph_view">
+		    <field eval="3" name="sequence"/>
+		    <field name="view_mode">graph</field>
+		    <field name="view_id" ref="transfer_graph_view"/>
 		    <field name="act_window_id" ref="transfer_list_action"/>
 		</record>
 
